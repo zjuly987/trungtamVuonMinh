@@ -66,7 +66,7 @@ class App
 
     public function parseURL()
     {
-        if (isset($_GET["url"])) {
+        if(isset($_GET["url"])){
 
             return explode(
                 "/",
@@ -80,6 +80,9 @@ class App
             );
         }
 
-        return [];
+        return [
+            "dashboard",
+            "secretary"
+        ];
     }
 }
