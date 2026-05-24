@@ -1,0 +1,150 @@
+body {
+    background: #f5f7fb;
+    font-family: Arial, sans-serif;
+}
+
+/* ===== HEADER ===== */
+.navbar {
+    background: #1f4e79 !important;
+    padding: 10px 18px;
+    
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: white !important;
+}
+
+.navbar .container{
+
+    max-width:none;
+
+    padding-left:10px;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+
+    background:#dbe9f4;
+
+    min-height:
+    calc(
+        100vh - 70px
+    );
+
+    margin-top:10px;
+
+    padding:25px;
+
+    border-radius:
+    0 12px 12px 0;
+}
+
+.sidebar a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:
+    14px 18px;
+
+    margin-bottom:10px;
+
+    color:#1f4e79;
+
+    text-decoration:none;
+
+    border-radius:10px;
+
+    font-weight:bold;
+
+    white-space:nowrap;
+}
+
+.sidebar a:hover {
+    background: #b7e1cd;
+}
+
+/* menu active */
+.sidebar a.active{
+
+    background:#b7e1cd;
+
+    color:black;
+
+    justify-content:center;
+
+    text-align:center;
+}
+
+/* ===== ROLE SWITCH tạm thời===== */
+
+.role-switch{
+
+    display:flex;
+
+    gap:10px;
+}
+
+
+.role-switch a{
+
+    color:white;
+
+    text-decoration:none;
+
+    background:
+    rgba(
+        255,
+        255,
+        255,
+        .12
+    );
+
+    padding:8px 16px;
+
+    border-radius:20px;
+
+    font-weight:bold;
+
+    transition:.3s;
+}
+
+
+.role-switch a:hover{
+
+    background:
+    rgba(
+        255,
+        255,
+        255,
+        .25
+    );
+}
+/* ===== CONTENT ===== */
+.content-box{
+
+    background:white;
+
+    min-height:calc(
+        100vh - 80px
+    );
+
+    margin-top:10px;
+
+    border-radius:12px;
+
+    padding:25px;
+
+    box-shadow:
+    0 2px 8px
+    rgba(
+        0,
+        0,
+        0,
+        .05
+    );
+}
