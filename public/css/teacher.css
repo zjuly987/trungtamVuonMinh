@@ -1,0 +1,595 @@
+/* ===== Layout ===== */
+
+.teacher-content{
+    padding:24px 28px;
+    background:#fff;
+    min-height:100%;
+    font-family:'Segoe UI',sans-serif;
+}
+
+/* ===== Breadcrumb ===== */
+
+.teacher-breadcrumb{
+    font-size:13px;
+    color:#6b7280;
+    margin-bottom:20px;
+}
+
+.teacher-breadcrumb a{
+    color:#3b82f6;
+    text-decoration:none;
+}
+
+.teacher-breadcrumb a:hover{
+    text-decoration:underline;
+}
+
+.teacher-breadcrumb span{
+    margin:0 6px;
+    color:#9ca3af;
+}
+
+/* ===== Section title ===== */
+
+.section-title{
+    font-size:13px;
+
+    font-weight:700;
+
+    color:#1e40af;
+
+    letter-spacing:.06em;
+
+    text-transform:uppercase;
+
+    margin-bottom:10px;
+
+    padding-bottom:6px;
+
+    border-bottom:2px solid #e5e7eb;
+}
+
+/* ===========================
+   TOOLBAR + SEARCH
+=========================== */
+
+.teacher-toolbar{
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+margin-bottom:20px;
+
+gap:12px;
+
+flex-wrap:wrap;
+}
+
+.search-group{
+display:flex;
+align-items:center;
+
+gap:8px;
+
+flex:1;
+
+max-width:420px;
+}
+
+.search-group input{
+
+flex:1;
+
+padding:8px 14px;
+
+border:1.5px solid #d1d5db;
+
+border-radius:6px;
+
+font-size:13.5px;
+
+color:#374151;
+
+outline:none;
+
+background:#f9fafb;
+
+transition:border-color .2s;
+}
+
+.search-group input:focus{
+
+border-color:#3b82f6;
+
+background:#fff;
+}
+
+.search-group input::placeholder{
+color:#9ca3af;
+}
+
+.btn-search{
+
+padding:8px 20px;
+
+background:#22c55e;
+
+color:#fff;
+
+border:none;
+
+border-radius:6px;
+
+font-size:13.5px;
+
+font-weight:600;
+
+cursor:pointer;
+
+white-space:nowrap;
+}
+
+.btn-search:hover{
+background:#16a34a;
+}
+
+.btn-add{
+display:inline-flex;
+
+align-items:center;
+
+gap:6px;
+
+padding:8px 18px;
+
+background:#fff;
+
+color:#374151;
+
+border:1.5px solid #d1d5db;
+
+border-radius:6px;
+
+font-size:13.5px;
+
+font-weight:600;
+
+text-decoration:none;
+
+transition:all .2s;
+
+white-space:nowrap;
+}
+
+.btn-add:hover{
+
+background:#f0f7ff;
+
+border-color:#3b82f6;
+
+color:#2563eb;
+}
+
+/* ===========================
+   TABLE
+=========================== */
+
+.teacher-table-wrap{
+
+    overflow-x:auto;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:8px;
+}
+
+.teacher-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    font-size:13px;
+}
+
+.teacher-table thead tr{
+
+    background:#1e3a5f;
+
+    color:white;
+}
+
+.teacher-table th{
+
+    padding:12px 14px;
+
+    text-align:left;
+
+    font-weight:600;
+}
+
+.teacher-table td{
+
+    padding:12px 14px;
+
+    color:#374151;
+}
+
+.teacher-table tbody tr{
+
+    border-bottom:1px solid #f0f0f0;
+
+    transition:.2s;
+}
+
+.teacher-table tbody tr:nth-child(even){
+
+    background:#f8fafc;
+}
+
+.teacher-table tbody tr:hover{
+
+    background:#eff6ff;
+}
+
+.empty-row td{
+
+    text-align:center;
+
+    padding:40px;
+
+    color:#9ca3af;
+
+    font-style:italic;
+}
+
+.teacher-table thead th:first-child{
+width:55px;
+text-align:center;
+}
+
+.teacher-table thead th:nth-child(2){
+width:70px;
+}
+
+.teacher-table thead th:nth-child(3){
+width:140px;
+}
+
+.teacher-table thead th:nth-child(5){
+width:130px;
+}
+
+.teacher-table thead th:nth-child(7){
+
+width:30px;
+
+white-space:nowrap;
+}
+
+.teacher-table thead th:last-child{
+
+width:120px;
+
+text-align:center;
+
+white-space:nowrap;
+}
+
+.teacher-table td:first-child{
+text-align:center;
+}
+
+
+/* ===========================
+   ACTION BUTTON
+=========================== */
+
+.action-group{
+display:flex;
+
+gap:6px;
+
+justify-content:center;
+}
+
+.btn-edit,
+.btn-delete{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:4px;
+
+padding:5px 13px;
+
+font-size:12.5px;
+
+font-weight:600;
+
+text-decoration:none;
+
+border:none;
+
+cursor:pointer;
+}
+
+.btn-edit{
+
+background:transparent;
+
+color:#1A365D;
+}
+
+.btn-delete{
+
+background:transparent;
+
+color:#dc2626;
+}
+
+.btn-edit:hover,
+.btn-delete:hover{
+opacity:.82;
+}
+
+/* ===========================
+   FORM
+=========================== */
+
+.teacher-form{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:18px 24px;
+}
+
+.form-group{
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+.full-width{
+    grid-column:span 2;
+}
+
+.form-group label{
+
+    margin-bottom:6px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    color:#374151;
+}
+
+.form-control{
+
+    padding:10px 14px;
+
+    border:1.5px solid #d1d5db;
+
+    border-radius:6px;
+
+    background:#f9fafb;
+
+    outline:none;
+
+    transition:.2s;
+}
+
+.form-control:focus{
+
+    border-color:#3b82f6;
+
+    background:white;
+}
+
+/* ===========================
+   FORM ACTION
+=========================== */
+
+.form-actions{
+
+    margin-top:28px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+}
+
+.btn-back{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    padding:8px 18px;
+
+    border:2px solid #2196f3;
+
+    border-radius:4px;
+
+    text-decoration:none;
+
+    color:#374151;
+
+    transition:.2s;
+}
+
+.btn-back:hover{
+    background:#eff6ff;
+}
+
+.action-right{
+
+    display:flex;
+
+    gap:12px;
+}
+
+.btn-cancel{
+
+    padding:8px 18px;
+
+    border-radius:18px;
+
+    background:#f3f4f6;
+
+    text-decoration:none;
+
+    color:#374151;
+}
+
+.btn-save{
+
+    padding:8px 18px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#10b981;
+
+    color:white;
+
+    cursor:pointer;
+}
+
+.btn-save:hover{
+    background:#059669;
+}
+
+/* ===== Responsive ===== */
+
+@media(max-width:768px){
+
+    .teacher-form{
+        grid-template-columns:1fr;
+    }
+
+    .full-width{
+        grid-column:span 1;
+    }
+
+    .teacher-toolbar{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .search-group{
+        max-width:100%;
+    }
+}
+.radio-group{
+
+display:flex;
+
+gap:18px;
+
+margin-top:8px;
+}
+
+.radio-group label{
+
+display:flex;
+
+align-items:center;
+
+gap:6px;
+
+font-size:13px;
+}
+
+/* popup */
+
+#teacher-modal{
+
+position:fixed;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:100%;
+
+background:
+rgba(
+0,0,0,.25
+);
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+z-index:999;
+}
+
+.teacher-popup{
+
+width:500px;
+
+background:white;
+
+padding:30px;
+
+border-radius:8px;
+
+text-align:center;
+
+box-shadow:
+0 8px 24px
+rgba(
+0,0,0,.15
+);
+}
+
+.popup-icon{
+
+font-size:42px;
+
+color:#ef4444;
+
+margin-bottom:16px;
+}
+
+.popup-title{
+
+font-size:22px;
+
+font-weight:700;
+
+color:#1f3f68;
+
+margin-bottom:24px;
+}
+
+.teacher-popup button{
+
+padding:
+10px 28px;
+
+background:#e5edf8;
+
+border:none;
+
+border-radius:4px;
+
+cursor:pointer;
+}
