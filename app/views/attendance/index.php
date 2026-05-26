@@ -240,7 +240,7 @@ function singleMapClassCode($id, $name) {
 <div class="student-content">
   <!-- Breadcrumb -->
   <div class="student-breadcrumb">
-    <a href="?url=attendance">Trang chủ</a>
+    <a href="?url=dashboard/teacher">Trang chủ</a>
     <span>›</span>
     Quản lý điểm danh
   </div>
