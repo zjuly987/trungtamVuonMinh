@@ -1,0 +1,273 @@
+<?php
+// Giao diện: Thực hiện điểm danh — Đồng bộ phong cách hệ thống
+?>
+
+<style>
+  .student-content {
+    padding: 24px 28px;
+    background: #fff;
+    min-height: 100%;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  /* Breadcrumb */
+  .student-breadcrumb {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 18px;
+  }
+  .student-breadcrumb a { color: #3b82f6; text-decoration: none; }
+  .student-breadcrumb a:hover { text-decoration: underline; }
+  .student-breadcrumb span { margin: 0 6px; color: #9ca3af; }
+
+  /* Section title */
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e40af;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  /* Table */
+  .student-table-wrap {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 20px;
+  }
+
+  .student-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  .student-table thead tr { background: #1e3a5f; color: #fff; }
+  .student-table thead th {
+    padding: 11px 14px;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .student-table thead th:first-child { width: 52px; text-align: center; }
+  .student-table thead th:nth-child(2) { width: 300px; }
+  .student-table thead th:last-child  { text-align: center; }
+
+  .student-table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.15s;
+  }
+  .student-table tbody tr:last-child { border-bottom: none; }
+  .student-table tbody tr:hover { background: #f0f7ff; }
+  .student-table tbody tr:nth-child(even) { background: #f8fafc; }
+  .student-table tbody tr:nth-child(even):hover { background: #e8f2ff; }
+
+  .student-table tbody td {
+    padding: 12px 14px;
+    color: #374151;
+    vertical-align: middle;
+  }
+  .student-table tbody td:first-child { text-align: center; color: #6b7280; font-weight: 600; }
+
+  /* Custom Radio Options */
+  .attendance-options {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+  }
+  .attendance-option {
+    cursor: pointer;
+    margin-bottom: 0px;
+  }
+  .attendance-option input[type="radio"] {
+    display: none;
+  }
+  .attendance-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: 2px solid #e5e7eb;
+    min-width: 110px;
+    user-select: none;
+  }
+  
+  /* Có mặt */
+  .attendance-label-present {
+    border-color: #22c55e;
+    color: #22c55e;
+    background: transparent;
+  }
+  .attendance-option input[type="radio"]:checked + .attendance-label-present {
+    background: #22c55e;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(34, 197, 94, 0.22);
+  }
+
+  /* Vắng mặt */
+  .attendance-label-absent {
+    border-color: #ef4444;
+    color: #ef4444;
+    background: transparent;
+  }
+  .attendance-option input[type="radio"]:checked + .attendance-label-absent {
+    background: #ef4444;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.22);
+  }
+
+  /* Đi muộn */
+  .attendance-label-late {
+    border-color: #eab308;
+    color: #eab308;
+    background: transparent;
+  }
+  .attendance-option input[type="radio"]:checked + .attendance-label-late {
+    background: #eab308;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(234, 179, 8, 0.22);
+  }
+
+  /* Buttons */
+  .btn-cancel {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    background: #fff;
+    color: #374151;
+    border: 1.5px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-cancel:hover {
+    background: #f3f4f6;
+    color: #1f2937;
+  }
+
+  .btn-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 22px;
+    background: #22c55e;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  .btn-submit:hover {
+    background: #16a34a;
+  }
+
+  .empty-row td {
+    text-align: center;
+    color: #9ca3af;
+    padding: 40px 0;
+    font-style: italic;
+  }
+</style>
+
+<div class="student-content">
+  <!-- Breadcrumb -->
+  <div class="student-breadcrumb">
+    <a href="?url=dashboard">Trang chủ</a>
+    <span>›</span>
+    <a href="?url=attendance">Quản lý điểm danh</a>
+    <span>›</span>
+    Thực hiện điểm danh
+  </div>
+
+  <!-- Section title -->
+  <div class="section-title">
+    📝 THỰC HIỆN ĐIỂM DANH — Lớp: <?= htmlspecialchars($tenLop) ?> — Buổi <?= $buoiIndex ?> (<?= date('d/m/Y', strtotime($ngayHoc)) ?>)
+  </div>
+
+  <!-- Form -->
+  <form action="?url=attendance/submitTake" method="POST">
+    <input type="hidden" name="ma_lop" value="<?= $maLop ?>">
+    <input type="hidden" name="ma_buoi" value="<?= $maBuoi ?>">
+
+    <!-- Table -->
+    <div class="student-table-wrap">
+      <table class="student-table">
+        <thead>
+          <tr>
+            <th style="width: 8%; text-align: center;">STT</th>
+            <th style="width: 42%;">Tên Học sinh</th>
+            <th style="width: 50%; text-align: center;">Trạng thái điểm danh</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if (empty($listHocSinh)): ?>
+            <tr class="empty-row">
+              <td colspan="3">Chưa có học sinh nào trong lớp này để điểm danh.</td>
+            </tr>
+          <?php else: ?>
+            <?php $stt = 1; foreach ($listHocSinh as $hs): ?>
+              <?php $savedStatus = isset($currentStatus[$hs['MaHocSinh']]) ? $currentStatus[$hs['MaHocSinh']] : 'Có mặt'; ?>
+              <tr>
+                <td class="text-center"><?= $stt++ ?></td>
+                <td class="fw-bold text-dark"><?= htmlspecialchars($hs['TenHocSinh']) ?></td>
+                <td>
+                  <div class="attendance-options">
+                    <!-- Có mặt -->
+                    <label class="attendance-option">
+                      <input type="radio" name="attendance[<?= $hs['MaHocSinh'] ?>]" value="Có mặt" <?= $savedStatus === 'Có mặt' ? 'checked' : '' ?>>
+                      <span class="attendance-label attendance-label-present">
+                        <i class="bi bi-check-circle-fill me-1"></i> Có mặt
+                      </span>
+                    </label>
+                    
+                    <!-- Vắng mặt -->
+                    <label class="attendance-option">
+                      <input type="radio" name="attendance[<?= $hs['MaHocSinh'] ?>]" value="Vắng mặt" <?= $savedStatus === 'Vắng mặt' ? 'checked' : '' ?>>
+                      <span class="attendance-label attendance-label-absent">
+                        <i class="bi bi-x-circle-fill me-1"></i> Vắng mặt
+                      </span>
+                    </label>
+                    
+                    <!-- Đi muộn -->
+                    <label class="attendance-option">
+                      <input type="radio" name="attendance[<?= $hs['MaHocSinh'] ?>]" value="Đi muộn" <?= $savedStatus === 'Đi muộn' ? 'checked' : '' ?>>
+                      <span class="attendance-label attendance-label-late">
+                        <i class="bi bi-clock-fill me-1"></i> Đi muộn
+                      </span>
+                    </label>
+                  </div>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          <?php endif; ?>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <a href="?url=attendance&view_matrix=<?= $maLop ?>#matrix-section" class="btn-cancel">
+        Hủy bỏ
+      </a>
+      <button type="submit" class="btn-submit">
+        <i class="bi bi-save"></i> Lưu kết quả điểm danh
+      </button>
+    </div>
+  </form>
+</div>
