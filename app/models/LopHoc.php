@@ -1,0 +1,293 @@
+<?php
+
+class LopHoc extends Model
+{
+    // Danh sách lớp học (JOIN giáo viên + lịch học + phòng)
+    public function getAll($keyword = null)
+    {
+        $sql = "
+            SELECT
+                l.MaLop,
+                l.TenLop,
+                l.SoBuoi,
+                l.SiSo,
+                l.NgayBatDau,
+                g.TenGiaoVien,
+                GROUP_CONCAT(
+                    CONCAT(lh.Thu, ' ', lh.Ca)
+                    ORDER BY lh.MaLich
+                    SEPARATOR ' | '
+                ) AS LichHoc,
+                GROUP_CONCAT(
+                    DISTINCT p.TenPhong
+                    ORDER BY p.TenPhong
+                    SEPARATOR ', '
+                ) AS DanhSachPhong
+            FROM LOP_HOC l
+            LEFT JOIN GIAO_VIEN g ON l.MaGiaoVien = g.MaGiaoVien
+            LEFT JOIN LICH_HOC lh ON l.MaLop = lh.MaLop
+            LEFT JOIN PHONG_HOC p ON lh.MaPhong = p.MaPhong
+        ";
+
+        $params = [];
+
+        if ($keyword) {
+            $sql .= " WHERE l.TenLop LIKE ? OR g.TenGiaoVien LIKE ?";
+            $params[] = "%$keyword%";
+            $params[] = "%$keyword%";
+        }
+
+        $sql .= " GROUP BY l.MaLop ORDER BY l.MaLop ASC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll();
+    }
+    public function getAllRooms()
+{
+    $stmt = $this->db->query("SELECT * FROM PHONG_HOC ORDER BY TenPhong ASC");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+    // Tạo lớp học
+    public function create($data)
+    {
+        $sql = "
+            INSERT INTO LOP_HOC (TenLop, SoBuoi, SiSo, NgayBatDau, MaGiaoVien)
+            VALUES (?, ?, ?, ?, ?)
+        ";
+
+        $stmt = $this->db->prepare($sql);
+
+        $stmt->execute([
+            $data["TenLop"],
+            $data["SoBuoi"],
+            $data["SiSo"],
+            $data["NgayBatDau"],
+            $data["MaGiaoVien"] ?: null
+        ]);
+
+        return $this->db->lastInsertId();
+    }
+
+    // Thêm học sinh vào lớp
+    public function addStudents($maLop, $students)
+    {
+        $sql = "INSERT INTO CHI_TIET_LOP (MaLop, MaHocSinh) VALUES (?, ?)";
+        $stmt = $this->db->prepare($sql);
+
+        foreach ($students as $studentId) {
+            $stmt->execute([$maLop, $studentId]);
+        }
+    }
+
+    // Xóa học sinh khỏi lớp
+    public function removeStudent($maLop, $maHocSinh)
+    {
+        $sql = "DELETE FROM CHI_TIET_LOP WHERE MaLop = ? AND MaHocSinh = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$maLop, $maHocSinh]);
+    }
+
+    // Tạo lịch học
+    public function createSchedule($maLop, $thuHoc, $ca, $maPhong)
+    {
+        $sql = "INSERT INTO LICH_HOC (MaLop, Thu, Ca, MaPhong) VALUES (?, ?, ?, ?)";
+        $stmt = $this->db->prepare($sql);
+
+        foreach ($thuHoc as $i => $thu) {
+            $stmt->execute([
+                $maLop,
+                $thu,
+                $ca[$i] ?? $ca[0],
+                $maPhong[$i] ?? $maPhong[0]
+            ]);
+        }
+    }
+    public function syncSiSo($maLop)
+{
+    $stmt = $this->db->prepare("SELECT COUNT(*) FROM CHI_TIET_LOP WHERE MaLop = ?");
+    $stmt->execute([$maLop]);
+    $count = $stmt->fetchColumn();
+
+    $stmt = $this->db->prepare("UPDATE LOP_HOC SET SiSo = ? WHERE MaLop = ?");
+    $stmt->execute([$count, $maLop]);
+}
+public function isFull($maLop)
+{
+    $stmt = $this->db->prepare("
+        SELECT l.SiSo, COUNT(c.MaHocSinh) as SoHienTai
+        FROM LOP_HOC l
+        LEFT JOIN CHI_TIET_LOP c ON l.MaLop = c.MaLop
+        WHERE l.MaLop = ?
+        GROUP BY l.MaLop
+    ");
+    $stmt->execute([$maLop]);
+    $row = $stmt->fetch();
+    return $row && $row['SoHienTai'] >= $row['SiSo'];
+}
+public function isActive($maLop)
+{
+    $stmt = $this->db->prepare("
+        SELECT COUNT(*) FROM BUOI_HOC 
+        WHERE MaLop = ? AND NgayHoc >= CURDATE()
+    ");
+    $stmt->execute([$maLop]);
+    return $stmt->fetchColumn() > 0;
+}
+public function update($id, $data)
+{
+    // Đếm số học sinh thực tế trong lớp
+    $stmt = $this->db->prepare("SELECT COUNT(*) FROM CHI_TIET_LOP WHERE MaLop = ?");
+    $stmt->execute([$id]);
+    $siSoThucTe = $stmt->fetchColumn();
+
+    $sql = "UPDATE LOP_HOC SET TenLop=?, SoBuoi=?, SiSo=?, NgayBatDau=?, MaGiaoVien=?
+            WHERE MaLop=?";
+    $stmt = $this->db->prepare($sql);
+    return $stmt->execute([
+        $data['TenLop'],
+        $data['SoBuoi'],
+        $siSoThucTe,  // dùng số thực tế thay vì $_POST['SiSo']
+        $data['NgayBatDau'],
+        $data['MaGiaoVien'] ?: null,
+        $id
+    ]);
+}
+    // Tạo buổi học tự động
+    public function taoBuoiHoc($maLop, $ngayBatDau, $thuHoc, $soBuoi)
+    {
+        $mapThu = [
+            'Thứ 2' => 1,
+            'Thứ 3' => 2,
+            'Thứ 4' => 3,
+            'Thứ 5' => 4,
+            'Thứ 6' => 5,
+            'Thứ 7' => 6,
+            'Chủ nhật' => 0
+        ];
+
+        $validDays = [];
+        foreach ($thuHoc as $thu) {
+            if (isset($mapThu[$thu])) {
+                $validDays[] = $mapThu[$thu];
+            }
+        }
+
+        $current = strtotime($ngayBatDau);
+        $count = 0;
+        $sql = "INSERT INTO BUOI_HOC (MaLop, NgayHoc) VALUES (?, ?)";
+        $stmt = $this->db->prepare($sql);
+
+        while ($count < $soBuoi) {
+            $weekday = (int) date("w", $current);
+            if (in_array($weekday, $validDays)) {
+                $stmt->execute([$maLop, date("Y-m-d", $current)]);
+                $count++;
+            }
+            $current = strtotime("+1 day", $current);
+        }
+    }
+
+    // Chi tiết lớp học (JOIN giáo viên + lịch học + phòng)
+    public function find($id)
+    {
+        $sql = "
+            SELECT
+                l.MaLop,
+                l.TenLop,
+                l.SoBuoi,
+                l.SiSo,
+                l.NgayBatDau,
+                l.MaGiaoVien,
+                g.TenGiaoVien,
+                GROUP_CONCAT(
+                    CONCAT(lh.Thu, ' ', lh.Ca)
+                    ORDER BY lh.MaLich
+                    SEPARATOR ' | '
+                ) AS LichHoc,
+                GROUP_CONCAT(
+                    DISTINCT p.TenPhong
+                    ORDER BY p.TenPhong
+                    SEPARATOR ', '
+                ) AS DanhSachPhong
+            FROM LOP_HOC l
+            LEFT JOIN GIAO_VIEN g ON l.MaGiaoVien = g.MaGiaoVien
+            LEFT JOIN LICH_HOC lh ON l.MaLop = lh.MaLop
+            LEFT JOIN PHONG_HOC p ON lh.MaPhong = p.MaPhong
+            WHERE l.MaLop = ?
+            GROUP BY l.MaLop
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id]);
+
+        return $stmt->fetch();
+    }
+
+    // Danh sách học sinh trong lớp
+    public function getStudents($id)
+    {
+        $sql = "
+            SELECT hs.*
+            FROM CHI_TIET_LOP ctl
+            JOIN HOC_SINH hs ON ctl.MaHocSinh = hs.MaHocSinh
+            WHERE ctl.MaLop = ?
+ORDER BY hs.MaHocSinh ASC        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id]);
+
+        return $stmt->fetchAll();
+    }
+
+    // Học sinh chưa có trong lớp (dùng cho modal thêm)
+    public function getStudentsNotInClass($id)
+    {
+        $sql = "
+            SELECT *
+            FROM HOC_SINH
+            WHERE MaHocSinh NOT IN (
+                SELECT MaHocSinh FROM CHI_TIET_LOP WHERE MaLop = ?
+            )
+            ORDER BY TenHocSinh ASC
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id]);
+
+        return $stmt->fetchAll();
+    }
+
+    // Danh sách buổi học
+    public function getSessions($id)
+    {
+        $sql = "
+            SELECT * FROM BUOI_HOC
+            WHERE MaLop = ?
+            ORDER BY NgayHoc ASC
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id]);
+
+        return $stmt->fetchAll();
+    }
+
+    // Xóa lớp học (và các bản ghi liên quan)
+    public function delete($id)
+    {
+        // Xóa theo thứ tự để không vi phạm FK
+        foreach ([
+            "DELETE FROM DIEM_DANH WHERE MaBuoi IN (SELECT MaBuoi FROM BUOI_HOC WHERE MaLop = ?)",
+            "DELETE FROM DIEM_HOC_TAP WHERE MaLop = ?",
+            "DELETE FROM BUOI_HOC WHERE MaLop = ?",
+            "DELETE FROM LICH_HOC WHERE MaLop = ?",
+            "DELETE FROM CHI_TIET_LOP WHERE MaLop = ?",
+            "DELETE FROM LOP_HOC WHERE MaLop = ?"
+        ] as $sql) {
+            $this->db->prepare($sql)->execute([$id]);
+        }
+    }
+}
