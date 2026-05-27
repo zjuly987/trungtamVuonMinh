@@ -87,7 +87,7 @@ function singleMapClassCode($id, $name) {
               <td class="fw-bold text-dark"><?= htmlspecialchars($lop['TenLop']) ?></td>
               <td><?= htmlspecialchars($lop['LichHoc']) ?></td>
               <td class="text-center">
-                <a href="?url=attendance&view_matrix=<?= $lop['MaLop'] ?>#matrix-section" class="btn-action-view">
+                <a href="?url=attendance/detail&ma_lop=<?= $lop['MaLop'] ?>" class="btn-action-view">
                   <i class="bi bi-calendar-check"></i> Tra cứu điểm danh
                 </a>
               </td>
@@ -97,130 +97,6 @@ function singleMapClassCode($id, $name) {
       </tbody>
     </table>
   </div>
-
-  <!-- PHẦN XEM CHI TIẾT ĐIỂM DANH LỚP HỌC -->
-  <?php if ($maLopMatrix): ?>
-    <?php 
-      $currentLopIndex = array_search($maLopMatrix, array_column($listLopHoc, 'MaLop'));
-      $selectedClassName = $currentLopIndex !== false ? $listLopHoc[$currentLopIndex]['TenLop'] : '';
-    ?>
-    <div id="matrix-section">
-      <!-- 1. BẢNG DANH SÁCH CÁC BUỔI HỌC CỦA LỚP -->
-      <div class="detail-card mb-4">
-        <div class="detail-card-header">
-          <span>📅 DANH SÁCH BUỔI HỌC: <?= htmlspecialchars($selectedClassName) ?></span>
-          <span style="font-size: 12.5px; font-weight: normal; opacity: 0.9;">Chọn buổi học để thực hiện hoặc chỉnh sửa điểm danh</span>
-        </div>
-        <div class="detail-card-body">
-          <div class="student-table-wrap" style="margin-bottom:0px;">
-            <table class="student-table">
-              <thead>
-                <tr>
-                  <th style="width: 10%;">STT</th>
-                  <th style="width: 25%;">Buổi số</th>
-                  <th style="width: 25%;">Ngày học</th>
-                  <th style="width: 25%;">Trạng thái điểm danh</th>
-                  <th style="width: 15%; text-align: center;">Hành động</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php if (empty($listBuoiHocWithStatus)): ?>
-                  <tr class="empty-row">
-                    <td colspan="5">Lớp chưa được lập lịch buổi học.</td>
-                  </tr>
-                <?php else: ?>
-                  <?php foreach ($listBuoiHocWithStatus as $index => $buoi): ?>
-                    <?php 
-                      $daDiemDanh = $buoi['SoHocSinhDaDiemDanh'] > 0;
-                    ?>
-                    <tr>
-                      <td><?= $index + 1 ?></td>
-                      <td class="fw-bold text-dark">Buổi số <?= $index + 1 ?></td>
-                      <td class="text-secondary"><?= date('d/m/Y', strtotime($buoi['NgayHoc'])) ?></td>
-                      <td>
-                        <?php if ($daDiemDanh): ?>
-                          <span class="badge-session badge-session-done">
-                            <i class="bi bi-check-circle-fill me-1"></i> Đã điểm danh (<?= $buoi['SoHocSinhDaDiemDanh'] ?> học sinh)
-                          </span>
-                        <?php else: ?>
-                          <span class="badge-session badge-session-pending">
-                            <i class="bi bi-x-circle-fill me-1"></i> Chưa điểm danh
-                          </span>
-                        <?php endif; ?>
-                      </td>
-                      <td class="text-center">
-                        <a href="?url=attendance/take&ma_lop=<?= $maLopMatrix ?>&ma_buoi=<?= $buoi['MaBuoi'] ?>" class="btn-action-take">
-                          <i class="bi bi-pencil-square"></i> <?= $daDiemDanh ? 'Sửa' : 'Điểm danh' ?>
-                        </a>
-                      </td>
-                    </tr>
-                  <?php endforeach; ?>
-                <?php endif; ?>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- 2. MA TRẬN ĐIỂM DANH LỚP HỌC -->
-      <div class="detail-card">
-        <div class="detail-card-header">
-          <span>📊 MA TRẬN ĐIỂM DANH: <?= htmlspecialchars($selectedClassName) ?></span>
-          <div class="d-flex gap-3" style="font-size: 12.5px; font-weight: normal; opacity: 0.95;">
-            <div><span class="dot-status dot-present me-1"></span> Có mặt</div>
-            <div><span class="dot-status dot-absent me-1"></span> Vắng mặt</div>
-            <div><span class="dot-status dot-late me-1"></span> Đi muộn</div>
-            <div><span class="dot-status dot-future me-1"></span> Chưa học</div>
-          </div>
-        </div>
-        <div class="detail-card-body">
-          <div class="student-table-wrap" style="margin-bottom:0px;">
-            <table class="student-table text-center">
-              <thead>
-                <tr>
-                  <th style="width: 8%; text-align: center;">STT</th>
-                  <th style="width: 25%; text-align: left;">Họ và tên Học sinh</th>
-                  <?php foreach ($listBuoiHocMatrix as $index => $buoi): ?>
-                    <th class="text-center" style="font-size: 12px; font-weight: 600;">Buổi <?= $index + 1 ?></th>
-                  <?php endforeach; ?>
-                </tr>
-              </thead>
-              <tbody>
-                <?php if (empty($listHocSinhMatrix)): ?>
-                  <tr class="empty-row">
-                    <td colspan="<?= count($listBuoiHocMatrix) + 2 ?>">Chưa có học sinh nào trong lớp.</td>
-                  </tr>
-                <?php else: ?>
-                  <?php foreach ($listHocSinhMatrix as $iHS => $hs): ?>
-                    <tr>
-                      <td class="text-center"><?= $iHS + 1 ?></td>
-                      <td class="text-start fw-bold text-dark"><?= htmlspecialchars($hs['TenHocSinh']) ?></td>
-                      <?php foreach ($listBuoiHocMatrix as $buoi): ?>
-                        <td class="text-center">
-                          <?php 
-                            $status = isset($matrixData[$hs['MaHocSinh']][$buoi['MaBuoi']]) ? $matrixData[$hs['MaHocSinh']][$buoi['MaBuoi']] : 'Chưa học';
-                            if ($status === 'Có mặt') {
-                                echo '<span class="dot-status dot-present" title="Có mặt"></span>';
-                            } elseif ($status === 'Vắng mặt') {
-                                echo '<span class="dot-status dot-absent" title="Vắng mặt"></span>';
-                            } elseif ($status === 'Đi muộn') {
-                                echo '<span class="dot-status dot-late" title="Đi muộn"></span>';
-                            } else {
-                                echo '<span class="dot-status dot-future" title="Chưa học"></span>';
-                            }
-                          ?>
-                        </td>
-                      <?php endforeach; ?>
-                    </tr>
-                  <?php endforeach; ?>
-                <?php endif; ?>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  <?php endif; ?>
 </div>
 
 <script>

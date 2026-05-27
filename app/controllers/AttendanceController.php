@@ -19,33 +19,47 @@ class AttendanceController extends Controller {
         $listLopHoc = $this->diemDanhModel->getDanhSachLopHoc($search);
         $allBuoiHoc = $this->buoiHocModel->getAllBuoiHoc();
 
-        // Xử lý nếu giáo viên bấm "Tra cứu & Điểm danh" để xem chi tiết
-        $maLopMatrix = isset($_GET['view_matrix']) ? intval($_GET['view_matrix']) : null;
-        $matrixData = [];
-        $listBuoiHocMatrix = [];
-        $listHocSinhMatrix = [];
-        $listBuoiHocWithStatus = [];
-
-        if ($maLopMatrix) {
-            $listBuoiHocMatrix = $this->buoiHocModel->getBuoiHocByLop($maLopMatrix);
-            $listHocSinhMatrix = $this->diemDanhModel->getHocSinhByLop($maLopMatrix);
-            $rawDiemDanh = $this->diemDanhModel->getDiemDanhByLop($maLopMatrix);
-            $listBuoiHocWithStatus = $this->buoiHocModel->getBuoiHocByLopWithStatus($maLopMatrix);
-
-            foreach ($rawDiemDanh as $row) {
-                $matrixData[$row['MaHocSinh']][$row['MaBuoi']] = $row['TrangThaiDiemDanh'];
-            }
-        }
-
         $this->view('attendance/index', [
             'listLopHoc' => $listLopHoc,
             'allBuoiHoc' => $allBuoiHoc,
-            'maLopMatrix' => $maLopMatrix,
+            'search' => $search,
+            'role' => 'teacher'
+        ]);
+    }
+
+    // Trang chi tiết điểm danh lớp học (trang riêng)
+    public function detail() {
+        $maLop = isset($_GET['ma_lop']) ? intval($_GET['ma_lop']) : null;
+
+        if (!$maLop) {
+            header("Location: ?url=attendance");
+            exit();
+        }
+
+        // Lấy tên lớp
+        require_once __DIR__ . '/../models/LopHoc.php';
+        $lopHocModel = new LopHoc();
+        $classInfo = $lopHocModel->find($maLop);
+        $tenLop = $classInfo ? $classInfo['TenLop'] : '';
+
+        // Lấy dữ liệu ma trận điểm danh
+        $listBuoiHocMatrix = $this->buoiHocModel->getBuoiHocByLop($maLop);
+        $listHocSinhMatrix = $this->diemDanhModel->getHocSinhByLop($maLop);
+        $rawDiemDanh = $this->diemDanhModel->getDiemDanhByLop($maLop);
+        $listBuoiHocWithStatus = $this->buoiHocModel->getBuoiHocByLopWithStatus($maLop);
+
+        $matrixData = [];
+        foreach ($rawDiemDanh as $row) {
+            $matrixData[$row['MaHocSinh']][$row['MaBuoi']] = $row['TrangThaiDiemDanh'];
+        }
+
+        $this->view('attendance/detail', [
+            'maLop' => $maLop,
+            'tenLop' => $tenLop,
             'listBuoiHocMatrix' => $listBuoiHocMatrix,
             'listHocSinhMatrix' => $listHocSinhMatrix,
             'matrixData' => $matrixData,
             'listBuoiHocWithStatus' => $listBuoiHocWithStatus,
-            'search' => $search,
             'role' => 'teacher'
         ]);
     }
