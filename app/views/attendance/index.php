@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="public/css/attendance.css">
+<link rel="stylesheet" href="public/css/attendance/index.css">
 
 <?php
 // Giao diện: Quản lý điểm danh — Đồng bộ phong cách hệ thống

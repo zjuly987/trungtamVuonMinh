@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="pulic/css/attendance.css">
+<link rel="stylesheet" href="public/css/attendance/take.css">
 
 <?php
 // Giao diện: Thực hiện điểm danh — Đồng bộ phong cách hệ thống
