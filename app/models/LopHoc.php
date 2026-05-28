@@ -136,6 +136,33 @@ public function isActive($maLop)
     $stmt->execute([$maLop]);
     return $stmt->fetchColumn() > 0;
 }
+
+public function getSchedule($id)
+{
+    $sql = "
+        SELECT lh.*, p.TenPhong
+        FROM LICH_HOC lh
+        LEFT JOIN PHONG_HOC p
+        ON lh.MaPhong = p.MaPhong
+        WHERE lh.MaLop = ?
+        ORDER BY lh.MaLich ASC
+    ";
+
+    $stmt = $this->db->prepare($sql);
+
+    $stmt->execute([$id]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function deleteSchedule($id)
+{
+    $sql = "DELETE FROM LICH_HOC WHERE MaLop = ?";
+
+    $stmt = $this->db->prepare($sql);
+
+    return $stmt->execute([$id]);
+}
 public function update($id, $data)
 {
     // Đếm số học sinh thực tế trong lớp
@@ -290,4 +317,136 @@ ORDER BY hs.MaHocSinh ASC        ";
             $this->db->prepare($sql)->execute([$id]);
         }
     }
+    public function isTeacherBusy($maGiaoVien, $thuHoc, $caHoc)
+{
+    $sql = "
+        SELECT COUNT(*) 
+        FROM LOP_HOC l
+        JOIN LICH_HOC lh ON l.MaLop = lh.MaLop
+        WHERE l.MaGiaoVien = ?
+        AND lh.Thu = ?
+        AND lh.Ca = ?
+    ";
+
+    $stmt = $this->db->prepare($sql);
+
+    $stmt->execute([
+        $maGiaoVien,
+        $thuHoc,
+        $caHoc
+    ]);
+
+    return $stmt->fetchColumn() > 0;
+}
+
+public function isRoomBusy($thuHoc, $caHoc, $maPhong)
+{
+    $sql = "
+        SELECT COUNT(*)
+        FROM LICH_HOC
+        WHERE Thu = ?
+        AND Ca = ?
+        AND MaPhong = ?
+    ";
+
+    $stmt = $this->db->prepare($sql);
+
+    $stmt->execute([
+        $thuHoc,
+        $caHoc,
+        $maPhong
+    ]);
+
+    return $stmt->fetchColumn() > 0;
+}
+public function isTeacherBusyForUpdate($maLop, $maGiaoVien, $thuHoc, $caHoc)
+{
+    $sql = "
+        SELECT COUNT(*)
+        FROM LOP_HOC l
+        JOIN LICH_HOC lh ON l.MaLop = lh.MaLop
+        WHERE l.MaGiaoVien = ?
+        AND lh.Thu = ?
+        AND lh.Ca = ?
+        AND l.MaLop != ?
+    ";
+
+    $stmt = $this->db->prepare($sql);
+
+    $stmt->execute([
+        $maGiaoVien,
+        $thuHoc,
+        $caHoc,
+        $maLop
+    ]);
+
+    return $stmt->fetchColumn() > 0;
+}
+
+public function isRoomBusyForUpdate($maLop, $thuHoc, $caHoc, $maPhong)
+{
+    $sql = "
+        SELECT COUNT(*)
+        FROM LICH_HOC
+        WHERE Thu = ?
+        AND Ca = ?
+        AND MaPhong = ?
+        AND MaLop != ?
+    ";
+
+    $stmt = $this->db->prepare($sql);
+
+    $stmt->execute([
+        $thuHoc,
+        $caHoc,
+        $maPhong,
+        $maLop
+    ]);
+
+    return $stmt->fetchColumn() > 0;
+}
+public function isStudentBusy($maHocSinh, $thuHoc, $caHoc)
+{
+    $sql = "
+        SELECT COUNT(*)
+        FROM CHI_TIET_LOP ctl
+        JOIN LICH_HOC lh ON ctl.MaLop = lh.MaLop
+        WHERE ctl.MaHocSinh = ?
+        AND lh.Thu = ?
+        AND lh.Ca = ?
+    ";
+
+    $stmt = $this->db->prepare($sql);
+
+    $stmt->execute([
+        $maHocSinh,
+        $thuHoc,
+        $caHoc
+    ]);
+
+    return $stmt->fetchColumn() > 0;
+}
+public function isStudentBusyForUpdate($maLop, $maHocSinh, $thuHoc, $caHoc)
+{
+    $sql = "
+        SELECT COUNT(*)
+        FROM CHI_TIET_LOP ctl
+        JOIN LICH_HOC lh ON ctl.MaLop = lh.MaLop
+        WHERE ctl.MaHocSinh = ?
+        AND lh.Thu = ?
+        AND lh.Ca = ?
+        AND ctl.MaLop != ?
+    ";
+
+    $stmt = $this->db->prepare($sql);
+
+    $stmt->execute([
+        $maHocSinh,
+        $thuHoc,
+        $caHoc,
+        $maLop
+    ]);
+
+    return $stmt->fetchColumn() > 0;
+}
 }

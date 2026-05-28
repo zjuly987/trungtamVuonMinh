@@ -221,7 +221,6 @@ if (!empty($students)) {
     <table class="student-table">
       <thead>
         <tr>
-          <th>STT</th>
           <th>Mã học sinh</th>
           <th>Họ và Tên</th>
           <th>Ngày sinh</th>
@@ -238,11 +237,9 @@ if (!empty($students)) {
   <?php else: ?>
     <?php foreach ($students as $i => $s): ?>
     <tr>
-      <td><?= $i + 1 ?></td>
+      
 
-      <td>
-        HS<?= str_pad((int)$s['MaHocSinh'], 3, '0', STR_PAD_LEFT) ?>
-      </td>
+      <td><?= htmlspecialchars($s['MaHocSinh']) ?></td>
 
       <td><?= htmlspecialchars($s['TenHocSinh']) ?></td>
 
