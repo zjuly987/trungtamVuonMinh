@@ -9,17 +9,7 @@ if (!empty($listLopHoc)) {
 }
 
 function singleMapClassCode($id, $name) {
-    if (strpos($name, 'Hóa học') !== false) return 'HOA' . filter_var($name, FILTER_SANITIZE_NUMBER_INT);
-    if (strpos($name, 'Ngữ văn') !== false) {
-        $num = filter_var($name, FILTER_SANITIZE_NUMBER_INT);
-        $char = (strpos($name, '(A)') !== false) ? 'A' : ((strpos($name, '(B)') !== false) ? 'B' : '');
-        return 'VAN' . $num . $char;
-    }
-    if (strpos($name, 'Toán') !== false) return 'TOAN' . filter_var($name, FILTER_SANITIZE_NUMBER_INT);
-    if (strpos($name, 'Tiếng Anh') !== false) return 'ANH' . filter_var($name, FILTER_SANITIZE_NUMBER_INT);
-    if (strpos($name, 'Vật lý') !== false) return 'LY' . filter_var($name, FILTER_SANITIZE_NUMBER_INT);
-    if (strpos($name, 'Sinh học') !== false) return 'SINH' . filter_var($name, FILTER_SANITIZE_NUMBER_INT);
-    if (strpos($name, 'Tiền tiểu học') !== false) return 'TTH' . filter_var($name, FILTER_SANITIZE_NUMBER_INT);
+    return $id; 
 }
 ?>
 

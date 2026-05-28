@@ -4,17 +4,7 @@
 // Giao diện: Chi tiết điểm danh lớp học — Trang riêng
 
 function detailMapClassCode($id, $name) {
-    if (strpos($name, 'Hóa học') !== false) return 'HOA' . filter_var($name, FILTER_SANITIZE_NUMBER_INT);
-    if (strpos($name, 'Ngữ văn') !== false) {
-        $num = filter_var($name, FILTER_SANITIZE_NUMBER_INT);
-        $char = (strpos($name, '(A)') !== false) ? 'A' : ((strpos($name, '(B)') !== false) ? 'B' : '');
-        return 'VAN' . $num . $char;
-    }
-    if (strpos($name, 'Toán') !== false) return 'TOAN' . filter_var($name, FILTER_SANITIZE_NUMBER_INT);
-    if (strpos($name, 'Tiếng Anh') !== false) return 'ANH' . filter_var($name, FILTER_SANITIZE_NUMBER_INT);
-    if (strpos($name, 'Vật lý') !== false) return 'LY' . filter_var($name, FILTER_SANITIZE_NUMBER_INT);
-    if (strpos($name, 'Sinh học') !== false) return 'SINH' . filter_var($name, FILTER_SANITIZE_NUMBER_INT);
-    if (strpos($name, 'Tiền tiểu học') !== false) return 'TTH' . filter_var($name, FILTER_SANITIZE_NUMBER_INT);
+    return $id;
 }
 
 $selectedClassName = isset($tenLop) ? $tenLop : '';
@@ -96,7 +86,6 @@ $selectedClassName = isset($tenLop) ? $tenLop : '';
           <div><span class="dot-status dot-present me-1"></span> Có mặt</div>
           <div><span class="dot-status dot-absent me-1"></span> Vắng mặt</div>
           <div><span class="dot-status dot-late me-1"></span> Đi muộn</div>
-          <div><span class="dot-status dot-future me-1"></span> Chưa học</div>
         </div>
       </div>
       <div class="detail-card-body">

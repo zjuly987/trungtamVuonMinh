@@ -197,7 +197,6 @@
   .dot-present { background-color: #22c55e; }
   .dot-absent { background-color: #ef4444; }
   .dot-late { background-color: #eab308; }
-  .dot-future { background-color: #e5e7eb; border: 1.5px dashed #9ca3af; }
 
   /* Thẻ Badge cho trạng thái buổi học */
   .badge-session {
