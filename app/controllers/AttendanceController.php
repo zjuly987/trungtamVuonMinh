@@ -34,12 +34,10 @@ class AttendanceController extends Controller {
     // Trang chi tiết điểm danh lớp học (trang riêng)
     public function detail() {
         $maLop = isset($_GET['ma_lop']) ? intval($_GET['ma_lop']) : null;
-
         if (!$maLop) {
             header("Location: ?url=attendance");
             exit();
         }
-
         // Lấy tên lớp
         require_once __DIR__ . '/../models/LopHoc.php';
         $lopHocModel = new LopHoc();
@@ -86,11 +84,11 @@ class AttendanceController extends Controller {
         // Tìm thứ tự buổi học (Buổi số mấy) và Ngày học
         $listBuoiHoc = $this->buoiHocModel->getBuoiHocByLop($maLop);
         $buoiIndex = 0;
-        $ngayHoc = '';
+        // $ngayHoc = '';
         foreach ($listBuoiHoc as $index => $b) {
             if ($b['MaBuoi'] == $maBuoi) {
                 $buoiIndex = $index + 1;
-                $ngayHoc = $b['NgayHoc'];
+                // $ngayHoc = $b['NgayHoc'];
                 break;
             }
         }
@@ -110,7 +108,7 @@ class AttendanceController extends Controller {
             'maBuoi' => $maBuoi,
             'tenLop' => $tenLop,
             'buoiIndex' => $buoiIndex,
-            'ngayHoc' => $ngayHoc,
+            // 'ngayHoc' => $ngayHoc,
             'listHocSinh' => $listHocSinh,
             'currentStatus' => $currentStatus,
             'role' => 'teacher'
