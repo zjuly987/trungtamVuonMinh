@@ -141,14 +141,7 @@
                 <td><?= $i+1 ?></td>
 
                 <td>
-
-                    GV<?= str_pad(
-                        $t['MaGiaoVien'],
-                        3,
-                        '0',
-                        STR_PAD_LEFT
-                    ) ?>
-
+                    <?= htmlspecialchars($t['MaGiaoVien']) ?>
                 </td>
 
                 <td>
