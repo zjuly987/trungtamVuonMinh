@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/trungtamVuonMinh/public/css/teacher.css">
+<link rel="stylesheet" href="/trungtamVuonMinh/public/css/grade.css">
 
 <div class="teacher-content">
 
@@ -17,26 +17,28 @@
     <div class="teacher-toolbar">
 
         <form method="GET" action="" style="display:contents;">
-
-            <input type="hidden" name="url" value="grade">
+            <input type="hidden" name="url" value="grade/detail">
 
             <div class="search-group">
 
-                <input
-                    type="text"
-                    name="search"
-                    placeholder="Tìm mã lớp..."
-                    value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
-                >
+                <select name="malop" class="form-control" required>
+                    <option value="">-- Chọn lớp --</option>
+
+                    <?php foreach ($classes as $c): ?>
+                        <option value="<?= $c['MaLop'] ?>"
+                            <?= ($maLop ?? '') == $c['MaLop'] ? 'selected' : '' ?>>
+                            <?= $c['MaLop'] ?> - <?= htmlspecialchars($c['TenLop']) ?>
+                        </option>
+                    <?php endforeach; ?>
+
+                </select>
 
                 <button class="btn-search">
-                    Tra cứu
+                    Tra cứu điểm
                 </button>
 
             </div>
-
         </form>
-
     </div>
 
     <!-- Section -->
@@ -50,7 +52,6 @@
 
             <thead>
                 <tr>
-                    <th>STT</th>
                     <th>Mã lớp</th>
                     <th>Tên lớp</th>
                     <th>Lịch học</th>
@@ -65,8 +66,6 @@
                 <?php foreach ($classes as $i => $c): ?>
 
                     <tr>
-
-                        <td><?= $i + 1 ?></td>
 
                         <td><?= $c['MaLop'] ?></td>
 

@@ -7,7 +7,7 @@ class GiaoVien extends Model {
         $stmt = $this->db->query("
             SELECT *
             FROM GIAO_VIEN
-            ORDER BY TenGiaoVien ASC
+            ORDER BY MaGiaoVien ASC
         ");
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -133,7 +133,7 @@ class GiaoVien extends Model {
             WHERE TenGiaoVien LIKE ?
             OR MaGiaoVien LIKE ?
             OR ChuyenMon LIKE ?
-            ORDER BY MaGiaoVien ASC
+            ORDER BY MaGiaoVien asc
         ";
 
         $stmt = $this->db->prepare($sql);

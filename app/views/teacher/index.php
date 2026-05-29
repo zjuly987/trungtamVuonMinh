@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="public/css/teacher.css">
+<link rel="stylesheet" href="/trungtamVuonMinh/public/css/teacher.css">
 <div class="teacher-content">
 
     <!-- Breadcrumb -->
@@ -112,8 +112,6 @@
 
                 <tr>
 
-                    <th>STT</th>
-
                     <th>Mã GV</th>
 
                     <th>Tên giáo viên</th>
@@ -137,8 +135,6 @@
             <?php foreach($teachers as $i=>$t): ?>
 
             <tr>
-
-                <td><?= $i+1 ?></td>
 
                 <td>
                     <?= htmlspecialchars($t['MaGiaoVien']) ?>

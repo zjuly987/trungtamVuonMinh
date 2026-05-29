@@ -28,20 +28,25 @@ class GradeController extends Controller
         ]);
     }
 
-    // NHẬP ĐIỂM (CREATE - chỉ thêm, không sửa)
+    // NHẬP ĐIỂM (CREATE - giữ nguyên logic)
     public function create()
     {
+        if (!isset($_SESSION['user'])) {
+            header("Location:?url=login");
+            exit;
+        }
+
         $maTaiKhoan = $_SESSION['user']['MaTaiKhoan'];
         $classes = $this->model->getClassesByAccount($maTaiKhoan);
 
         $maLop = $_GET['malop'] ?? null;
         $students = $maLop ? $this->model->getHocSinhByLop($maLop) : [];
 
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             foreach ($_POST['data'] as $maHS => $d) {
 
-                // CHỈ INSERT (KHÔNG UPDATE)
                 if (($d['DTX'] ?? '') === '' &&
                     ($d['KT'] ?? '') === '' &&
                     ($d['Thi'] ?? '') === '') {
@@ -49,15 +54,15 @@ class GradeController extends Controller
                 }
 
                 if (($d['DTX'] ?? 0) > 0) {
-                    $this->model->saveDiem($maHS, 'TX', $d['DTX']);
+                    $this->model->saveDiem($maHS, $maLop, 'TX', $d['DTX']);
                 }
 
                 if (($d['KT'] ?? 0) > 0) {
-                    $this->model->saveDiem($maHS, 'KT', $d['KT']);
+                    $this->model->saveDiem($maHS, $maLop, 'KT', $d['KT']);
                 }
 
                 if (($d['Thi'] ?? 0) > 0) {
-                    $this->model->saveDiem($maHS, 'THI', $d['Thi']);
+                    $this->model->saveDiem($maHS, $maLop, 'THI', $d['Thi']);
                 }
             }
 
@@ -73,9 +78,14 @@ class GradeController extends Controller
         ]);
     }
 
-    // SỬA ĐIỂM (UPDATE - không insert mới)
+    // SỬA ĐIỂM (EDIT - giữ nguyên logic)
     public function edit()
     {
+        if (!isset($_SESSION['user'])) {
+            header("Location:?url=login");
+            exit;
+        }
+
         $maTaiKhoan = $_SESSION['user']['MaTaiKhoan'];
         $classes = $this->model->getClassesByAccount($maTaiKhoan);
 
@@ -92,9 +102,9 @@ class GradeController extends Controller
 
             foreach ($_POST['data'] as $maHS => $d) {
 
-                $this->model->saveDiem($maHS, 'TX', $d['DTX'] ?? 0);
-                $this->model->saveDiem($maHS, 'KT', $d['KT'] ?? 0);
-                $this->model->saveDiem($maHS, 'THI', $d['Thi'] ?? 0);
+                $this->model->saveDiem($maHS, $maLop, 'TX', $d['DTX'] ?? 0);
+                $this->model->saveDiem($maHS, $maLop, 'KT', $d['KT'] ?? 0);
+                $this->model->saveDiem($maHS, $maLop, 'THI', $d['Thi'] ?? 0);
             }
 
             header("Location:?url=grade/edit&malop=$maLop");
@@ -102,6 +112,34 @@ class GradeController extends Controller
         }
 
         $this->view('grade/edit', [
+            'classes' => $classes,
+            'students' => $students,
+            'maLop' => $maLop,
+            'role' => 'teacher'
+        ]);
+    }
+
+    // TRA CỨU ĐIỂM (DETAIL - FIX LỖI SESSION)
+    public function detail()
+    {
+        if (!isset($_SESSION['user'])) {
+            header("Location:?url=login");
+            exit;
+        }
+
+        $maLop = $_GET['malop'] ?? null;
+
+        $maTaiKhoan = $_SESSION['user']['MaTaiKhoan'];
+
+        $classes = $this->model->getClassesByAccount($maTaiKhoan);
+
+        $students = [];
+
+        if ($maLop) {
+            $students = $this->model->getHocSinhByLop($maLop);
+        }
+
+        $this->view('grade/detail', [
             'classes' => $classes,
             'students' => $students,
             'maLop' => $maLop,
