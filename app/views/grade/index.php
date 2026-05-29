@@ -55,6 +55,7 @@
                     <th>Mã lớp</th>
                     <th>Tên lớp</th>
                     <th>Lịch học</th>
+                    <th>Phòng học</th>
                     <th>Thao tác</th>
                 </tr>
             </thead>
@@ -71,7 +72,9 @@
 
                         <td><?= htmlspecialchars($c['TenLop']) ?></td>
 
-                        <td><?= htmlspecialchars($c['LichHoc'] ?? 'Chưa cập nhật') ?></td>
+                        <td><?= htmlspecialchars($c['LichHoc'] ?? 'Chưa xếp lịch') ?></td>
+
+                        <td><?= htmlspecialchars($c['PhongHoc'] ?? 'Chưa có phòng') ?></td>
 
                         <td>
 
