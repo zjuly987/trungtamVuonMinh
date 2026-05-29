@@ -1,5 +1,7 @@
 <!-- app/views/class/detail.php -->
-<!-- Biến từ controller: $class, $students, $sessions, $allStudents -->
+<!-- Biến từ controller: $class, $students, $allStudents, $teachers, $rooms, $schedules -->
+<!-- $schedules: array of ['Thu'=>..., 'Ca'=>..., 'MaPhong'=>...] cho lớp này -->
+
 <?php if (($_GET['error'] ?? '') === 'full'): ?>
     <div class="alert alert-danger">Lớp học đã đạt sĩ số tối đa. Không thể thêm học sinh mới!</div>
 <?php endif; ?>
@@ -7,6 +9,7 @@
 <?php if (($_GET['success'] ?? '') === 'added'): ?>
     <div class="alert alert-success">Thêm học sinh vào lớp thành công!</div>
 <?php endif; ?>
+
 <div class="container-fluid mt-3 pe-4">
 
     <nav aria-label="breadcrumb">
@@ -21,7 +24,7 @@
 
     <!-- Thông tin chung (có thể sửa) -->
     <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
-        <div class="d-flex align-items-center mb-3">
+        <div class="d-flex align-items-center mb-4">
             <div style="width:4px; height:24px; background-color:#2B547E; margin-right:10px; border-radius:2px;"></div>
             <h5 class="fw-bold mb-0 text-dark">Thông tin chung</h5>
         </div>
@@ -29,50 +32,149 @@
         <form action="?url=class/detail&id=<?= $class['MaLop'] ?>" method="POST">
             <input type="hidden" name="action" value="updateClass">
 
+            <!-- Hàng 1: Tên lớp, Số buổi, Sĩ số -->
             <div class="row g-3 mb-3">
+                <div class="col-md-5">
+                    <label class="form-label fw-semibold text-muted" style="font-size:0.88rem;">
+                        Tên lớp <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" name="TenLop"
+                           class="form-control rounded-pill"
+                           value="<?= htmlspecialchars($class['TenLop']) ?>"
+                           required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold text-muted" style="font-size:0.88rem;">
+                        Số buổi <span class="text-danger">*</span>
+                    </label>
+                    <input type="number" name="SoBuoi" min="1"
+                           class="form-control rounded-pill text-center"
+                           value="<?= $class['SoBuoi'] ?>"
+                           required>
+                </div>
                 <div class="col-md-4">
-                    <label class="form-label text-muted" style="font-size:0.88rem;">Tên lớp</label>
-                    <input type="text" name="TenLop" class="form-control rounded-pill"
-                           value="<?= htmlspecialchars($class['TenLop']) ?>" required>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label text-muted" style="font-size:0.88rem;">Số buổi</label>
-                    <input type="number" name="SoBuoi" min="1" class="form-control rounded-pill text-center"
-                           value="<?= $class['SoBuoi'] ?>" required>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label text-muted" style="font-size:0.88rem;">Sĩ số (tự động)</label>
-                    <input type="text" class="form-control rounded-pill text-center bg-light"
-                           value="<?= $class['SiSo'] ?>" readonly>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label text-muted" style="font-size:0.88rem;">Ngày bắt đầu</label>
-                    <input type="date" name="NgayBatDau" class="form-control rounded-pill"
-                           value="<?= $class['NgayBatDau'] ?>" required>
+                    <label class="form-label fw-semibold text-muted" style="font-size:0.88rem;">
+                        Sĩ số tối đa <span class="text-danger">*</span>
+                        <span class="fw-normal text-muted" style="font-size:0.80rem;">
+                            (hiện: <strong><?= $class['SiSo'] ?></strong> học sinh)
+                        </span>
+                    </label>
+                    <input type="number" name="SiSoToiDa" min="1"
+                           class="form-control rounded-pill text-center"
+                           value="<?= $class['SiSoToiDa'] ?? $class['SiSo'] ?>"
+                           required>
                 </div>
             </div>
 
+            <!-- Hàng 2: Ngày bắt đầu, Giáo viên -->
             <div class="row g-3 mb-3">
                 <div class="col-md-4">
-                    <label class="form-label text-muted" style="font-size:0.88rem;">Giáo viên</label>
-                    <input type="text" class="form-control rounded-pill bg-light"
-                           value="<?= htmlspecialchars($class['TenGiaoVien'] ?? '—') ?>" readonly>
-                    <input type="hidden" name="MaGiaoVien" value="<?= $class['MaGiaoVien'] ?>">
+                    <label class="form-label fw-semibold text-muted" style="font-size:0.88rem;">
+                        Ngày bắt đầu <span class="text-danger">*</span>
+                    </label>
+                    <input type="date" name="NgayBatDau"
+                           class="form-control rounded-pill"
+                           value="<?= $class['NgayBatDau'] ?>"
+                           required>
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label text-muted" style="font-size:0.88rem;">Lịch học</label>
-                    <input type="text" class="form-control rounded-pill bg-light"
-                           value="<?= htmlspecialchars($class['LichHoc'] ?? '—') ?>" readonly>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label text-muted" style="font-size:0.88rem;">Phòng</label>
-                    <input type="text" class="form-control rounded-pill bg-light"
-                           value="<?= htmlspecialchars($class['DanhSachPhong'] ?? '—') ?>" readonly>
+                <div class="col-md-8">
+                    <label class="form-label fw-semibold text-muted" style="font-size:0.88rem;">
+                        Giáo viên phụ trách
+                    </label>
+                    <select name="MaGiaoVien" class="form-select rounded-pill">
+                        <option value="">— Chưa phân công —</option>
+                        <?php foreach ($teachers as $teacher): ?>
+                            <option value="<?= $teacher['MaGiaoVien'] ?>"
+                                <?= ($class['MaGiaoVien'] == $teacher['MaGiaoVien']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($teacher['TenGiaoVien']) ?>
+                                — <?= htmlspecialchars($teacher['ChuyenMon']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
             </div>
 
+            <!-- Lịch học động -->
+            <div class="mb-4">
+                <label class="form-label fw-semibold text-muted d-block" style="font-size:0.88rem;">
+                    Lịch học <span class="text-danger">*</span>
+                    <span class="fw-normal">(mỗi hàng = 1 buổi/tuần)</span>
+                </label>
+                <div class="card border rounded-3 p-3" style="background:#f8fafc;">
+                    <div id="schedule-rows">
+                        <?php
+                        // Nếu có lịch cũ thì hiển thị sẵn, nếu không thì tạo 1 hàng trống
+                        $existingSchedules = !empty($schedules) ? $schedules : [[]];
+                        foreach ($existingSchedules as $idx => $sch):
+                        ?>
+                        <div class="row g-2 align-items-center mb-2 schedule-item">
+                            <div class="col-auto">
+                                <span class="badge bg-secondary rounded-pill">Buổi <?= $idx + 1 ?></span>
+                            </div>
+                            <div class="col-md-3">
+                                <select name="Thu[]" class="form-select form-select-sm rounded-pill" required>
+                                    <option value="">— Thứ —</option>
+                                    <?php foreach (['Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7','Chủ nhật'] as $t): ?>
+                                        <option value="<?= $t ?>"
+                                            <?= (($sch['Thu'] ?? '') === $t) ? 'selected' : '' ?>>
+                                            <?= $t ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select name="Ca[]" class="form-select form-select-sm rounded-pill" required>
+                                    <option value="">— Ca —</option>
+                                    <?php
+                                    $caList = [
+                                        'Ca 1' => 'Ca 1 (7h–9h)',
+                                        'Ca 2' => 'Ca 2 (9h–11h)',
+                                        'Ca 3' => 'Ca 3 (13h–15h)',
+                                        'Ca 4' => 'Ca 4 (15h–17h)',
+                                        'Ca 5' => 'Ca 5 (17h30–19h30)',
+                                    ];
+                                    foreach ($caList as $val => $label): ?>
+                                        <option value="<?= $val ?>"
+                                            <?= (($sch['Ca'] ?? '') === $val) ? 'selected' : '' ?>>
+                                            <?= $label ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select name="MaPhong[]" class="form-select form-select-sm rounded-pill" required>
+                                    <option value="">— Phòng —</option>
+                                    <?php foreach ($rooms as $room): ?>
+                                        <option value="<?= $room['MaPhong'] ?>"
+                                            <?= (($sch['MaPhong'] ?? '') == $room['MaPhong']) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($room['TenPhong']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-danger rounded-pill btn-remove-schedule"
+                                        style="display:<?= count($existingSchedules) > 1 ? 'inline-block' : 'none' ?>;">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="mt-1">
+                        <button type="button" id="btn-add-schedule"
+                                class="btn btn-sm rounded-pill px-3"
+                                style="background-color:#E2E8F0; color:#1A365D; border:1px solid #cbd5e1; font-size:0.83rem;">
+                            + Thêm buổi
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nút lưu -->
             <div class="d-flex justify-content-end">
-                <button type="submit" class="btn text-white rounded-3 px-4"
+                <button type="submit" class="btn text-white rounded-3 px-4 shadow-sm"
                         style="background-color:#2B547E;">
                     💾 Lưu thay đổi
                 </button>
@@ -239,6 +341,72 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// ── Thêm / xóa hàng lịch học ──────────────────────────────────────────────
+const thuOptions  = ['Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7','Chủ nhật'];
+const caOptions   = [
+    {v:'Ca 1', l:'Ca 1 (7h–9h)'},
+    {v:'Ca 2', l:'Ca 2 (9h–11h)'},
+    {v:'Ca 3', l:'Ca 3 (13h–15h)'},
+    {v:'Ca 4', l:'Ca 4 (15h–17h)'},
+    {v:'Ca 5', l:'Ca 5 (17h30–19h30)'}
+];
+const roomOptions = `<?php foreach ($rooms as $room): ?><option value="<?= $room['MaPhong'] ?>"><?= htmlspecialchars($room['TenPhong']) ?></option><?php endforeach; ?>`;
+
+document.getElementById('btn-add-schedule').addEventListener('click', function () {
+    const container = document.getElementById('schedule-rows');
+    const idx = container.querySelectorAll('.schedule-item').length + 1;
+
+    const thuOpts = thuOptions.map(t => `<option value="${t}">${t}</option>`).join('');
+    const caOpts  = caOptions.map(c => `<option value="${c.v}">${c.l}</option>`).join('');
+
+    container.insertAdjacentHTML('beforeend', `
+        <div class="row g-2 align-items-center mb-2 schedule-item">
+            <div class="col-auto">
+                <span class="badge bg-secondary rounded-pill">Buổi ${idx}</span>
+            </div>
+            <div class="col-md-3">
+                <select name="Thu[]" class="form-select form-select-sm rounded-pill" required>
+                    <option value="">— Thứ —</option>${thuOpts}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="Ca[]" class="form-select form-select-sm rounded-pill" required>
+                    <option value="">— Ca —</option>${caOpts}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="MaPhong[]" class="form-select form-select-sm rounded-pill" required>
+                    <option value="">— Phòng —</option>${roomOptions}
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill btn-remove-schedule">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </div>`);
+    toggleRemove();
+});
+
+document.getElementById('schedule-rows').addEventListener('click', function (e) {
+    if (e.target.closest('.btn-remove-schedule')) {
+        e.target.closest('.schedule-item').remove();
+        document.querySelectorAll('.schedule-item .badge').forEach((b, i) => {
+            b.textContent = `Buổi ${i + 1}`;
+        });
+        toggleRemove();
+    }
+});
+
+function toggleRemove() {
+    const items = document.querySelectorAll('.schedule-item');
+    items.forEach(item => {
+        item.querySelector('.btn-remove-schedule').style.display =
+            items.length > 1 ? 'inline-block' : 'none';
+    });
+}
+
+// ── Modal tìm kiếm & chọn học sinh ────────────────────────────────────────
 document.getElementById('searchStudentModal').addEventListener('input', function () {
     const kw = this.value.toLowerCase();
     document.querySelectorAll('#modalStudentTable tbody tr').forEach(row => {
