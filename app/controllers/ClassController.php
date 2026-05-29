@@ -311,8 +311,7 @@ if (!empty($_POST["students"]) && !empty($_POST["Thu"])) {
     $studentsAdd = count($_POST["MaHocSinh"]);
 
     // Validate vượt sĩ số
-    if (($studentsCurrent + $studentsAdd) > $class["SiSoToiDa"]) {
-
+if (($studentsCurrent + $studentsAdd) > 20) {
         echo "
             <script>
                 alert('Vượt quá sĩ số tối đa của lớp!');

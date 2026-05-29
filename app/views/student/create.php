@@ -1,6 +1,11 @@
 <div class="container mt-4" style="max-width: 600px;">
     <h2>Thêm Học sinh</h2>
     <form method="POST">
+        <?php if (!empty($errors['duplicate'])): ?>
+    <div style="color:red; margin-bottom:15px;">
+        <?= $errors['duplicate'] ?>
+    </div>
+<?php endif; ?>
         <div class="mb-3">
             <label class="form-label">Họ tên</label>
             <input type="text" name="TenHocSinh" class="form-control" required>

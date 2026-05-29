@@ -185,6 +185,11 @@
 
   <!-- Form -->
   <form method="POST">
+    <?php if (!empty($errors['duplicate'])): ?>
+    <div style="color:red; margin-bottom:15px;">
+        <?= $errors['duplicate'] ?>
+    </div>
+<?php endif; ?>
 
     <div class="student-form">
 

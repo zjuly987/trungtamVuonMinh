@@ -124,11 +124,12 @@ if (!empty($students)) {
     text-align: left;
     white-space: nowrap;
   }
-  .student-table thead th:first-child { width: 52px; text-align: center; }
-  .student-table thead th:nth-child(2) { width: 110px; }
-  .student-table thead th:nth-child(4) { width: 90px; }
-  .student-table thead th:nth-child(5) { width: 110px; }
-  .student-table thead th:last-child  { width: 120px; text-align: center; }
+  .student-table thead th:nth-child(1) { width: 100px; }        /* Mã học sinh */
+.student-table thead th:nth-child(2) { min-width: 200px; }    /* Họ và Tên — rộng ra */
+.student-table thead th:nth-child(3) { width: 110px; }        /* Ngày sinh */
+.student-table thead th:nth-child(4) { min-width: 160px; }    /* Địa chỉ */
+.student-table thead th:nth-child(5) { width: 130px; }        /* Số điện thoại */
+.student-table thead th:last-child   { width: 120px; text-align: center; }
 
   .student-table tbody tr {
     border-bottom: 1px solid #f0f0f0;
