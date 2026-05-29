@@ -1,5 +1,4 @@
 <link rel="stylesheet" href="public/css/teacher.css">
-
 <div class="teacher-content">
 
     <!-- Breadcrumb -->
