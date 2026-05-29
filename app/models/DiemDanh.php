@@ -68,4 +68,42 @@ class DiemDanh extends Model {
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([':MaBuoi' => $maBuoi, ':MaHocSinh' => $maHocSinh, ':TrangThaiDiemDanh' => $trangThai]);
     }
+
+    public function getDanhSachLopHocByTeacher($maTaiKhoan, $search = null)
+    {
+        $sql = "SELECT lh.MaLop, lh.TenLop
+                FROM LOP_HOC lh
+                INNER JOIN GIAO_VIEN gv 
+                    ON lh.MaGiaoVien = gv.MaGiaoVien
+                WHERE gv.MaTaiKhoan = ?";
+        $params = [$maTaiKhoan];
+        if (!empty($search)) { $sql .= " AND lh.TenLop LIKE ?"; $params[] = "%" . $search . "%"; }
+        $sql .= " ORDER BY lh.MaLop ASC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        $classes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Lấy lịch học
+        $sqlLich = "SELECT MaLop, Thu, Ca, MaPhong FROM LICH_HOC";
+        $stmtLich = $this->db->prepare($sqlLich);
+        $stmtLich->execute();
+        $schedules = $stmtLich->fetchAll(PDO::FETCH_ASSOC);
+        // Ghép lịch học vào từng lớp
+        foreach ($classes as &$class) {
+            $lichArray = [];
+            $phongArray = [];
+            foreach ($schedules as $s) {
+                if ($s['MaLop'] == $class['MaLop']) {
+                    $lichArray[] = $s['Thu'] . " " . $s['Ca'];
+                    $phongArray[] = $s['MaPhong'];
+                }
+            }
+            $class['LichHoc'] = !empty($lichArray)
+                ? implode(' | ', $lichArray)
+                : 'Chưa xếp lịch';
+            $class['PhongHoc'] = !empty($phongArray)
+                ? implode(' | ', array_unique($phongArray))
+                : 'Chưa có phòng';
+        }
+        return $classes;
+    }
 }

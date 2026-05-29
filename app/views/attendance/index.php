@@ -57,10 +57,10 @@ function singleMapClassCode($id, $name) {
     <table class="student-table">
       <thead>
         <tr>
-          <th>STT</th>
           <th>Mã lớp</th>
           <th>Tên lớp</th>
           <th>Lịch học</th>
+          <th>Phòng học</th>
           <th class="text-center">Thao tác</th>
         </tr>
       </thead>
@@ -72,10 +72,10 @@ function singleMapClassCode($id, $name) {
         <?php else: ?>
           <?php foreach ($listLopHoc as $i => $lop): ?>
             <tr>
-              <td><?= $i + 1 ?></td>
               <td class="fw-bold text-secondary"><?= singleMapClassCode($lop['MaLop'], $lop['TenLop']) ?></td>
               <td class="fw-bold text-dark"><?= htmlspecialchars($lop['TenLop']) ?></td>
               <td><?= htmlspecialchars($lop['LichHoc']) ?></td>
+              <td><?= htmlspecialchars($lop['PhongHoc']) ?></td>
               <td class="text-center">
                 <a href="?url=attendance/detail&ma_lop=<?= $lop['MaLop'] ?>" class="btn-action-view">
                   <i class="bi bi-calendar-check"></i> Tra cứu điểm danh

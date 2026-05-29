@@ -16,7 +16,11 @@ class AttendanceController extends Controller {
         $this->buoiHocModel->syncBuoiHocForClasses();
 
         $search = isset($_GET['search']) ? trim($_GET['search']) : null;
-        $listLopHoc = $this->diemDanhModel->getDanhSachLopHoc($search);
+        // $listLopHoc = $this->diemDanhModel->getDanhSachLopHoc($search);
+        $maTaiKhoan = $_SESSION['MaTaiKhoan'];
+
+        $listLopHoc = $this->diemDanhModel
+            ->getDanhSachLopHocByTeacher($maTaiKhoan, $search);
         $allBuoiHoc = $this->buoiHocModel->getAllBuoiHoc();
 
         $this->view('attendance/index', [
