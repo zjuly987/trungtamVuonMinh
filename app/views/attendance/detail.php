@@ -34,7 +34,7 @@ $selectedClassName = isset($tenLop) ? $tenLop : '';
               <tr>
                 <th style="width: 10%;">STT</th>
                 <th style="width: 25%;">Buổi số</th>
-                <th style="width: 25%;">Ngày học</th>
+                <!-- <th style="width: 25%;">Ngày học</th> -->
                 <th style="width: 25%;">Trạng thái điểm danh</th>
                 <th style="width: 15%; text-align: center;">Hành động</th>
               </tr>
@@ -52,7 +52,7 @@ $selectedClassName = isset($tenLop) ? $tenLop : '';
                   <tr>
                     <td><?= $index + 1 ?></td>
                     <td class="fw-bold text-dark">Buổi số <?= $index + 1 ?></td>
-                    <td class="text-secondary"><?= date('d/m/Y', strtotime($buoi['NgayHoc'])) ?></td>
+                    <!-- <td class="text-secondary"><?= date('d/m/Y', strtotime($buoi['NgayHoc'])) ?></td> -->
                     <td>
                       <?php if ($daDiemDanh): ?>
                         <span class="badge-session badge-session-done">
@@ -66,7 +66,7 @@ $selectedClassName = isset($tenLop) ? $tenLop : '';
                     </td>
                     <td class="text-center">
                       <a href="?url=attendance/take&ma_lop=<?= $maLop ?>&ma_buoi=<?= $buoi['MaBuoi'] ?>" class="btn-action-take">
-                        <i class="bi bi-pencil-square"></i> <?= $daDiemDanh ? 'Sửa' : 'Điểm danh' ?>
+                        <?= $daDiemDanh ? 'Sửa' : 'Điểm danh' ?>
                       </a>
                     </td>
                   </tr>

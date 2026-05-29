@@ -1,16 +1,149 @@
 <?php
 
-class GradeController
-extends Controller
+require_once __DIR__ . '/../models/DiemHocTap.php';
+
+class GradeController extends Controller
 {
+    private $model;
+
+    public function __construct()
+    {
+        $this->model = new DiemHocTap();
+    }
+
+    // DANH SÁCH LỚP
     public function index()
     {
-        $this->view(
-            "grade/index",
-            [
-                "role"=>
-                "teacher"
-            ]
-        );
+        if (!isset($_SESSION['user'])) {
+            header("Location:?url=login");
+            exit;
+        }
+
+        $maTaiKhoan = $_SESSION['user']['MaTaiKhoan'];
+        $classes = $this->model->getClassesByAccount($maTaiKhoan);
+
+        $this->view('grade/index', [
+            'classes' => $classes,
+            'role' => 'teacher'
+        ]);
+    }
+
+    // NHẬP ĐIỂM (CREATE - giữ nguyên logic)
+    public function create()
+    {
+        if (!isset($_SESSION['user'])) {
+            header("Location:?url=login");
+            exit;
+        }
+
+        $maTaiKhoan = $_SESSION['user']['MaTaiKhoan'];
+        $classes = $this->model->getClassesByAccount($maTaiKhoan);
+
+        $maLop = $_GET['malop'] ?? null;
+        $students = $maLop ? $this->model->getHocSinhByLop($maLop) : [];
+
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            foreach ($_POST['data'] as $maHS => $d) {
+
+                if (($d['DTX'] ?? '') === '' &&
+                    ($d['KT'] ?? '') === '' &&
+                    ($d['Thi'] ?? '') === '') {
+                    continue;
+                }
+
+                if (($d['DTX'] ?? 0) > 0) {
+                    $this->model->saveDiem($maHS, $maLop, 'TX', $d['DTX']);
+                }
+
+                if (($d['KT'] ?? 0) > 0) {
+                    $this->model->saveDiem($maHS, $maLop, 'KT', $d['KT']);
+                }
+
+                if (($d['Thi'] ?? 0) > 0) {
+                    $this->model->saveDiem($maHS, $maLop, 'THI', $d['Thi']);
+                }
+            }
+
+            header("Location:?url=grade/create&malop=$maLop");
+            exit;
+        }
+
+        $this->view('grade/create', [
+            'classes' => $classes,
+            'students' => $students,
+            'maLop' => $maLop,
+            'role' => 'teacher'
+        ]);
+    }
+
+    // SỬA ĐIỂM (EDIT - giữ nguyên logic)
+    public function edit()
+    {
+        if (!isset($_SESSION['user'])) {
+            header("Location:?url=login");
+            exit;
+        }
+
+        $maTaiKhoan = $_SESSION['user']['MaTaiKhoan'];
+        $classes = $this->model->getClassesByAccount($maTaiKhoan);
+
+        $maLop = $_GET['malop'] ?? null;
+
+        if (!$maLop) {
+            header("Location:?url=grade");
+            exit;
+        }
+
+        $students = $this->model->getHocSinhByLop($maLop);
+
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+
+            foreach ($_POST['data'] as $maHS => $d) {
+
+                $this->model->saveDiem($maHS, $maLop, 'TX', $d['DTX'] ?? 0);
+                $this->model->saveDiem($maHS, $maLop, 'KT', $d['KT'] ?? 0);
+                $this->model->saveDiem($maHS, $maLop, 'THI', $d['Thi'] ?? 0);
+            }
+
+            header("Location:?url=grade/edit&malop=$maLop");
+            exit;
+        }
+
+        $this->view('grade/edit', [
+            'classes' => $classes,
+            'students' => $students,
+            'maLop' => $maLop,
+            'role' => 'teacher'
+        ]);
+    }
+
+    // TRA CỨU ĐIỂM (DETAIL - FIX LỖI SESSION)
+    public function detail()
+    {
+        if (!isset($_SESSION['user'])) {
+            header("Location:?url=login");
+            exit;
+        }
+
+        $maLop = $_GET['malop'] ?? null;
+
+        $maTaiKhoan = $_SESSION['user']['MaTaiKhoan'];
+
+        $classes = $this->model->getClassesByAccount($maTaiKhoan);
+
+        $students = [];
+
+        if ($maLop) {
+            $students = $this->model->getHocSinhByLop($maLop);
+        }
+
+        $this->view('grade/detail', [
+            'classes' => $classes,
+            'students' => $students,
+            'maLop' => $maLop,
+            'role' => 'teacher'
+        ]);
     }
 }

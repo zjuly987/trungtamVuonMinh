@@ -1,5 +1,4 @@
-<link rel="stylesheet" href="public/css/teacher.css">
-
+<link rel="stylesheet" href="/trungtamVuonMinh/public/css/teacher.css">
 <div class="teacher-content">
 
     <!-- Breadcrumb -->
@@ -113,8 +112,6 @@
 
                 <tr>
 
-                    <th>STT</th>
-
                     <th>Mã GV</th>
 
                     <th>Tên giáo viên</th>
@@ -139,17 +136,8 @@
 
             <tr>
 
-                <td><?= $i+1 ?></td>
-
                 <td>
-
-                    GV<?= str_pad(
-                        $t['MaGiaoVien'],
-                        3,
-                        '0',
-                        STR_PAD_LEFT
-                    ) ?>
-
+                    <?= htmlspecialchars($t['MaGiaoVien']) ?>
                 </td>
 
                 <td>

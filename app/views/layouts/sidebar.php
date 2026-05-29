@@ -1,5 +1,9 @@
-<?php $role = $role ?? ''; ?>
+<?php
+$currentUrl = $_GET['url'] ?? 'dashboard';
+$parts = explode('/', $currentUrl);
 
+$controller = $parts[0] ?? '';
+?>
 <div class="sidebar">
 <div>
 
@@ -40,7 +44,7 @@
     </a>
 
     <a href="?url=grade"
-       class="<?= $currentController==="grade" ? "active" : "" ?>">
+    class="<?= $controller === "grade" ? "active" : "" ?>">
         Quản lý điểm
     </a>
 

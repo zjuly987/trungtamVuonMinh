@@ -28,6 +28,10 @@ class AuthController extends Controller
 
         if ($user && $matKhau === $user['MatKhau']) {
             $_SESSION['user'] = $user;
+
+            // Lưu mã tài khoản đang đăng nhập
+            $_SESSION['MaTaiKhoan'] = $user['MaTaiKhoan'];
+            
             $this->redirectByRole($user['VaiTro']);
         } else {
             $error = "Tên đăng nhập hoặc mật khẩu không đúng.";
