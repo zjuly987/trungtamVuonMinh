@@ -28,25 +28,20 @@ class GradeController extends Controller
         ]);
     }
 
-    // NHẬP ĐIỂM (CREATE - giữ nguyên logic)
+    // NHẬP ĐIỂM (CREATE - chỉ thêm, không sửa)
     public function create()
     {
-        if (!isset($_SESSION['user'])) {
-            header("Location:?url=login");
-            exit;
-        }
-
         $maTaiKhoan = $_SESSION['user']['MaTaiKhoan'];
         $classes = $this->model->getClassesByAccount($maTaiKhoan);
 
         $maLop = $_GET['malop'] ?? null;
         $students = $maLop ? $this->model->getHocSinhByLop($maLop) : [];
 
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             foreach ($_POST['data'] as $maHS => $d) {
 
+                // CHỈ INSERT (KHÔNG UPDATE)
                 if (($d['DTX'] ?? '') === '' &&
                     ($d['KT'] ?? '') === '' &&
                     ($d['Thi'] ?? '') === '') {
@@ -78,14 +73,9 @@ class GradeController extends Controller
         ]);
     }
 
-    // SỬA ĐIỂM (EDIT - giữ nguyên logic)
+    // SỬA ĐIỂM (UPDATE - không insert mới)
     public function edit()
     {
-        if (!isset($_SESSION['user'])) {
-            header("Location:?url=login");
-            exit;
-        }
-
         $maTaiKhoan = $_SESSION['user']['MaTaiKhoan'];
         $classes = $this->model->getClassesByAccount($maTaiKhoan);
 
@@ -118,20 +108,12 @@ class GradeController extends Controller
             'role' => 'teacher'
         ]);
     }
-
-    // TRA CỨU ĐIỂM (DETAIL - FIX LỖI SESSION)
     public function detail()
     {
-        if (!isset($_SESSION['user'])) {
-            header("Location:?url=login");
-            exit;
-        }
+        $maTaiKhoan = $_SESSION['user']['MaTaiKhoan'];
+        $classes = $this->model->getClassesByAccount($maTaiKhoan);
 
         $maLop = $_GET['malop'] ?? null;
-
-        $maTaiKhoan = $_SESSION['user']['MaTaiKhoan'];
-
-        $classes = $this->model->getClassesByAccount($maTaiKhoan);
 
         $students = [];
 

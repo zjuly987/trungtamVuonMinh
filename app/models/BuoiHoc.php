@@ -2,7 +2,7 @@
 class BuoiHoc extends Model {
     // Lấy danh sách toàn bộ các buổi học của hệ thống để hỗ trợ Javascript lọc nhanh
     public function getAllBuoiHoc() {
-        $sql = "SELECT MaBuoi, MaLop, NgayHoc FROM BUOI_HOC ORDER BY MaLop ASC, NgayHoc ASC, MaBuoi ASC";
+        $sql = "SELECT MaBuoi, MaLop, NgayHoc FROM BUOI_HOC ORDER BY MaLop ASC, MaBuoi ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

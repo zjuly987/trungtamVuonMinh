@@ -10,7 +10,6 @@ class DiemHocTap extends Model
             FROM lop_hoc l
             JOIN giao_vien gv ON gv.MaGiaoVien = l.MaGiaoVien
             WHERE gv.MaTaiKhoan = :maTaiKhoan
-            order by l.MaLop DESC
         ";
 
         $stmt = $this->db->prepare($sql);
@@ -50,19 +49,16 @@ class DiemHocTap extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function saveDiem($maHocSinh, $maLop, $lanKiemTra, $diem)
+    public function saveDiem($maHS, $maLop, $loai, $diem)
     {
-        $sql = "INSERT INTO diem_hoc_tap(MaHocSinh, MaLop, LanKiemTra, Diem)
-                VALUES (?, ?, ?, ?)";
+        $sql = "
+            INSERT INTO diem_hoc_tap (MaHocSinh, MaLop, LanKiemTra, Diem)
+            VALUES (?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE Diem = VALUES(Diem)
+        ";
 
         $stmt = $this->db->prepare($sql);
-
-        return $stmt->execute([
-            $maHocSinh,
-            $maLop,
-            $lanKiemTra,
-            $diem
-        ]);
+        return $stmt->execute([$maHS, $maLop, $loai, $diem]);
     }
 
     public function tinhDTB($tx, $kt, $thi)
