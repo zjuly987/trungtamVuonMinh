@@ -109,35 +109,37 @@ class DiemDanh extends Model {
 
     public function isBuoiBeforeCompleted($maLop, $maBuoi)
     {
-        // Lấy danh sách buổi học của lớp
-        $sql = "SELECT MaBuoi FROM BUOI_HOC WHERE MaLop = :MaLop ORDER BY NgayHoc ASC, MaBuoi ASC";
+        $sql = " SELECT MaBuoi FROM BUOI_HOC WHERE MaLop = :MaLop ORDER BY MaBuoi ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':MaLop' => $maLop]);
-        $buoiHocList = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        // Tìm vị trí buổi hiện tại
-        $currentIndex = -1;
-        foreach ($buoiHocList as $index => $b) {
-
-            if ($b['MaBuoi'] == $maBuoi) {
+        $listBuoi = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Nếu không có buổi học
+        if (empty($listBuoi)) {
+            return true;
+        }
+        $currentIndex = null;
+        foreach ($listBuoi as $index => $buoi) {
+            if ((int)$buoi['MaBuoi'] === (int)$maBuoi) {
                 $currentIndex = $index;
                 break;
             }
         }
-        // Nếu là buổi đầu tiên thì cho phép
-        if ($currentIndex <= 0) {
+        // Không tìm thấy buổi hiện tại
+        if ($currentIndex === null) {
+            return false;
+        }
+        // Nếu là buổi đầu tiên -> luôn cho phép
+        if ($currentIndex === 0) {
             return true;
         }
-        // Lấy buổi trước đó
-        $prevBuoi = $buoiHocList[$currentIndex - 1]['MaBuoi'];
-        // Kiểm tra đã có điểm danh chưa
-        $checkSql = "SELECT COUNT(*) 
-                     FROM DIEM_DANH
-                     WHERE MaBuoi = :MaBuoi";
-
-        $stmt = $this->db->prepare($checkSql);
-        $stmt->execute([
-            ':MaBuoi' => $prevBuoi
-        ]);
-        return $stmt->fetchColumn() > 0;
+        // Lấy mã buổi trước
+        $maBuoiTruoc = $listBuoi[$currentIndex - 1]['MaBuoi'];
+        // Kiểm tra buổi trước đã điểm danh chưa
+        $sqlCheck = " SELECT NgayHoc FROM BUOI_HOC WHERE MaBuoi = :MaBuoi";
+        $stmt = $this->db->prepare($sqlCheck);
+        $stmt->execute([':MaBuoi' => $maBuoiTruoc]);
+        $prevBuoi = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Có ngày học => đã điểm danh
+        return !empty($prevBuoi['NgayHoc']);
     }
 }

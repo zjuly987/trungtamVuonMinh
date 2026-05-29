@@ -131,6 +131,8 @@ class AttendanceController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $maLop = intval($_POST['ma_lop']);
             $maBuoi = intval($_POST['ma_buoi']);
+            // Nếu chưa có ngày học thì tự động lưu lần đầu
+            $this->buoiHocModel->setNgayHocIfNull($maBuoi);
             $records = isset($_POST['attendance']) ? $_POST['attendance'] : [];
 
             foreach ($records as $maHocSinh => $trangThai) {
