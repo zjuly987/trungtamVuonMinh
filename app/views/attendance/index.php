@@ -43,9 +43,7 @@ function singleMapClassCode($id, $name) {
         </select>
       </div>
 
-      <button type="submit" class="btn-search">
-        <i class="bi bi-pencil-square me-1"></i> Điểm danh
-      </button>
+      <button type="submit" class="btn-search">Điểm danh</button>
     </form>
   </div>
 
@@ -78,7 +76,7 @@ function singleMapClassCode($id, $name) {
               <td><?= htmlspecialchars($lop['PhongHoc']) ?></td>
               <td class="text-center">
                 <a href="?url=attendance/detail&ma_lop=<?= $lop['MaLop'] ?>" class="btn-action-view">
-                  <i class="bi bi-calendar-check"></i> Tra cứu điểm danh
+                  Tra cứu điểm danh
                 </a>
               </td>
             </tr>
@@ -108,18 +106,18 @@ document.getElementById('select-lop').addEventListener('change', function() {
             opt.value = b.MaBuoi;
             
             // Định dạng ngày hiển thị nếu có
-            let dateStr = '';
-            if (b.NgayHoc) {
-                const d = new Date(b.NgayHoc);
-                if (!isNaN(d.getTime())) {
-                    const day = String(d.getDate()).padStart(2, '0');
-                    const month = String(d.getMonth() + 1).padStart(2, '0');
-                    const year = d.getFullYear();
-                    dateStr = ` (${day}/${month}/${year})`;
-                }
-            }
+            // let dateStr = '';
+            // if (b.NgayHoc) {
+            //     const d = new Date(b.NgayHoc);
+            //     if (!isNaN(d.getTime())) {
+            //         const day = String(d.getDate()).padStart(2, '0');
+            //         const month = String(d.getMonth() + 1).padStart(2, '0');
+            //         const year = d.getFullYear();
+            //         dateStr = ` (${day}/${month}/${year})`;
+            //     }
+            // } ${dateStr}
             
-            opt.textContent = `Buổi số ${index + 1}${dateStr}`;
+            opt.textContent = `Buổi số ${index + 1}`;
             selectBuoi.appendChild(opt);
         });
         

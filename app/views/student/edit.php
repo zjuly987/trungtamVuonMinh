@@ -185,6 +185,11 @@
 
   <!-- Form -->
   <form method="POST">
+    <?php if (!empty($errors['duplicate'])): ?>
+    <div style="color:red; margin-bottom:15px;">
+        <?= $errors['duplicate'] ?>
+    </div>
+<?php endif; ?>
 
     <div class="student-form">
 
@@ -245,12 +250,11 @@
     <!-- Buttons -->
    <div class="form-actions">
 
-    <a href="?url=student" class="btn-back">
-        ↩ Quay lại
-    </a>
-
+   <a href="?url=class" class="btn text-decoration-none d-inline-flex align-items-center justify-content-center rounded-pill px-4 shadow-sm" 
+   style="border: 1px solid #cbd5e1; color: #475569; background-color: #ffffff; font-size: 0.88rem; height: 38px; gap: 8px;">
+    <span style="font-size: 1.1rem; line-height: 1;">←</span> Quay lại
+</a>
     <div class="action-right">
-
         <a href="?url=student" class="btn-cancel">
             Hủy bỏ
         </a>
@@ -258,7 +262,6 @@
         <button type="submit" class="btn-save">
             💾 Lưu thay đổi
         </button>
-
     </div>
 
 </div>

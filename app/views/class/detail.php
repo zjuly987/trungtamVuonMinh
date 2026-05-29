@@ -173,12 +173,12 @@
             </div>
 
             <!-- Nút lưu -->
-            <div class="d-flex justify-content-end">
-                <button type="submit" class="btn text-white rounded-3 px-4 shadow-sm"
-                        style="background-color:#2B547E;">
-                    💾 Lưu thay đổi
-                </button>
-            </div>
+           <div class="d-flex justify-content-end">
+    <button type="submit" class="btn text-white rounded-pill px-4 shadow-sm"
+            style="background-color:#10B981; border: none; font-size: 0.88rem;">
+        💾 Lưu thay đổi
+    </button>
+</div>
         </form>
     </div>
 
@@ -247,19 +247,23 @@
     </div>
 
     <!-- Nút hành động -->
-    <div class="d-flex justify-content-between align-items-center mt-3">
-        <a href="?url=class" class="btn btn-light rounded-pill px-4 shadow-sm border">
-            ↩ Quay lại
-        </a>
-        <form action="?url=class/delete" method="POST"
-              onsubmit="return confirm('Xóa lớp này? Hành động không thể hoàn tác.')">
-            <input type="hidden" name="MaLop" value="<?= $class['MaLop'] ?>">
-            <button type="submit" class="btn rounded-3 px-4 shadow-sm text-dark border"
-                    style="background-color:#CBD5E1;">
-                🗑️ Xóa lớp
-            </button>
-        </form>
-    </div>
+    <!-- Điều hướng chân trang (Quay lại & Xóa lớp) -->
+<div class="d-flex justify-content-between align-items-center">
+    <!-- Nút quay lại mới -->
+    <a href="?url=class" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm" 
+       style="font-size: 0.85rem; border: 1px solid #cbd5e1; color: #475569; background-color: #ffffff;">
+        <i class="bi bi-arrow-left me-2"></i> Quay lại
+    </a>
+    
+    <form action="?url=class/delete" method="POST"
+          onsubmit="return confirm('Xóa lớp này?')">
+        <input type="hidden" name="MaLop" value="<?= $class['MaLop'] ?>">
+        <button type="submit" class="btn rounded-pill px-4 shadow-sm text-white"
+                style="background-color:#EF4444; border:none; font-size:13px; padding: 8px 18px; display: inline-flex; align-items: center; gap: 6px;">
+            <i class="bi bi-trash3"></i> Xóa lớp học
+        </button>
+    </form>
+</div>
 </div>
 
 <!-- Modal thêm học sinh -->

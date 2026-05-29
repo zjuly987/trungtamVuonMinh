@@ -65,4 +65,35 @@ public function isStudentInClass($id)
 
     return $stmt->rowCount() > 0;
 }
+public function isDuplicate($data, $excludeId = null)
+{
+    $sql = "SELECT * FROM HOC_SINH
+            WHERE TenHocSinh = ?
+            AND NgaySinh = ?
+            AND SoDienThoai = ?";
+
+    // Nếu là update thì bỏ qua chính nó
+    if ($excludeId) {
+        $sql .= " AND MaHocSinh != ?";
+    }
+
+    $stmt = $this->db->prepare($sql);
+
+    if ($excludeId) {
+        $stmt->execute([
+            $data['TenHocSinh'],
+            $data['NgaySinh'],
+            $data['SoDienThoai'],
+            $excludeId
+        ]);
+    } else {
+        $stmt->execute([
+            $data['TenHocSinh'],
+            $data['NgaySinh'],
+            $data['SoDienThoai']
+        ]);
+    }
+
+    return $stmt->rowCount() > 0;
+}
 }

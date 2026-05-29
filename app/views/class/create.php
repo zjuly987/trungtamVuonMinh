@@ -185,16 +185,22 @@
             </div>
 
             <!-- Nút hành động -->
-            <div class="d-flex justify-content-between align-items-center mt-2">
-                <a href="?url=class" ...
-                   class="btn btn-light rounded-pill px-4 shadow-sm border">
-                    ↩ Quay lại
+            <div class="form-actions mt-4" style="display: flex; justify-content: space-between; align-items: center;">
+                
+                <a href="?url=class" class="btn-action-view" style="padding: 8px 18px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+                    <i class="bi bi-arrow-left"></i> Quay lại danh sách
                 </a>
-                <button type="submit"
-                        class="btn text-white rounded-3 px-4 shadow-sm"
-                        style="background-color:#00A854;">
-                    <i class="bi bi-plus-circle me-1"></i> Tạo lớp học
-                </button>
+
+                <div class="action-right" style="display: flex; gap: 12px;">
+                    <a href="?url=class" class="btn-cancel" style="padding: 8px 18px; border: none; border-radius: 18px; background: #f3f4f6; color: #374151; font-size: 13px; text-decoration: none; display: inline-block;">
+                        Hủy bỏ
+                    </a>
+                    
+                    <button type="submit" class="btn-save" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border: none; border-radius: 18px; background: #10b981; color: white; font-size: 13px; cursor: pointer; transition: 0.2s;">
+                        <i class="bi bi-plus-circle"></i> Tạo lớp học
+                    </button>
+                </div>
+
             </div>
 
         </form>

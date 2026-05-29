@@ -34,12 +34,10 @@ class AttendanceController extends Controller {
     // Trang chi tiết điểm danh lớp học (trang riêng)
     public function detail() {
         $maLop = isset($_GET['ma_lop']) ? intval($_GET['ma_lop']) : null;
-
         if (!$maLop) {
             header("Location: ?url=attendance");
             exit();
         }
-
         // Lấy tên lớp
         require_once __DIR__ . '/../models/LopHoc.php';
         $lopHocModel = new LopHoc();
@@ -72,9 +70,20 @@ class AttendanceController extends Controller {
     public function take() {
         $maLop = isset($_REQUEST['ma_lop']) ? intval($_REQUEST['ma_lop']) : null;
         $maBuoi = isset($_REQUEST['ma_buoi']) ? intval($_REQUEST['ma_buoi']) : null;
-
         if (!$maLop || !$maBuoi) {
             die("<script>alert('Vui lòng chọn đầy đủ Lớp học và Buổi học!'); window.location.href='?url=attendance';</script>");
+        }
+        // Kiểm tra buổi trước đã điểm danh chưa
+        $isValid = $this->diemDanhModel
+            ->isBuoiBeforeCompleted($maLop, $maBuoi);
+        if (!$isValid) {
+            echo "
+                <script>
+                    alert('Bạn phải điểm danh buổi trước trước khi điểm danh buổi này!');
+                    window.location.href='?url=attendance/detail&ma_lop=$maLop';
+                </script>
+            ";
+            exit();
         }
 
         // Lấy thông tin lớp học để hiển thị tiêu đề
@@ -86,11 +95,11 @@ class AttendanceController extends Controller {
         // Tìm thứ tự buổi học (Buổi số mấy) và Ngày học
         $listBuoiHoc = $this->buoiHocModel->getBuoiHocByLop($maLop);
         $buoiIndex = 0;
-        $ngayHoc = '';
+        // $ngayHoc = '';
         foreach ($listBuoiHoc as $index => $b) {
             if ($b['MaBuoi'] == $maBuoi) {
                 $buoiIndex = $index + 1;
-                $ngayHoc = $b['NgayHoc'];
+                // $ngayHoc = $b['NgayHoc'];
                 break;
             }
         }
@@ -110,7 +119,7 @@ class AttendanceController extends Controller {
             'maBuoi' => $maBuoi,
             'tenLop' => $tenLop,
             'buoiIndex' => $buoiIndex,
-            'ngayHoc' => $ngayHoc,
+            // 'ngayHoc' => $ngayHoc,
             'listHocSinh' => $listHocSinh,
             'currentStatus' => $currentStatus,
             'role' => 'teacher'
@@ -122,6 +131,8 @@ class AttendanceController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $maLop = intval($_POST['ma_lop']);
             $maBuoi = intval($_POST['ma_buoi']);
+            // Nếu chưa có ngày học thì tự động lưu lần đầu
+            $this->buoiHocModel->setNgayHocIfNull($maBuoi);
             $records = isset($_POST['attendance']) ? $_POST['attendance'] : [];
 
             foreach ($records as $maHocSinh => $trangThai) {

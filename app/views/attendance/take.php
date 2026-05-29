@@ -16,7 +16,8 @@
 
   <!-- Section title -->
   <div class="section-title">
-    📝 THỰC HIỆN ĐIỂM DANH — Lớp: <?= htmlspecialchars($tenLop) ?> — Buổi <?= $buoiIndex ?> (<?= date('d/m/Y', strtotime($ngayHoc)) ?>)
+    📝 THỰC HIỆN ĐIỂM DANH — Lớp: <?= htmlspecialchars($tenLop) ?> — Buổi <?= $buoiIndex ?> 
+    <!-- (<?= date('d/m/Y', strtotime($ngayHoc)) ?>) -->
   </div>
 
   <!-- Form -->
@@ -81,11 +82,11 @@
 
     <!-- Actions -->
     <div class="d-flex justify-content-end gap-2 mt-3">
-      <a href="?url=attendance&view_matrix=<?= $maLop ?>#matrix-section" class="btn-cancel">
+      <a href="?url=attendance/detail&ma_lop=<?= $maLop ?>" class="btn-cancel">
         Hủy bỏ
       </a>
       <button type="submit" class="btn-submit">
-        <i class="bi bi-save"></i> Lưu kết quả điểm danh
+        💾 Lưu kết quả điểm danh
       </button>
     </div>
   </form>

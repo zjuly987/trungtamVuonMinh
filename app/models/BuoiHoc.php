@@ -35,7 +35,7 @@ class BuoiHoc extends Model {
      */
     public function syncBuoiHocForClasses() {
         // Lấy tất cả lớp học cùng số buổi cấu hình và ngày bắt đầu
-        $sqlLop = "SELECT MaLop, SoBuoi, NgayBatDau FROM LOP_HOC ORDER BY MaLop ASC";
+        $sqlLop = "SELECT MaLop, SoBuoi FROM LOP_HOC ORDER BY MaLop ASC";
         $stmtLop = $this->db->prepare($sqlLop);
         $stmtLop->execute();
         $classes = $stmtLop->fetchAll(PDO::FETCH_ASSOC);
@@ -63,7 +63,7 @@ class BuoiHoc extends Model {
             'Chủ nhật' => 0,
         ];
 
-        $sqlInsert = "INSERT INTO BUOI_HOC (MaLop, NgayHoc) VALUES (?, ?)";
+        $sqlInsert = "INSERT INTO BUOI_HOC (MaLop) VALUES (?)";
         $stmtInsert = $this->db->prepare($sqlInsert);
 
         foreach ($classes as $class) {
@@ -81,43 +81,75 @@ class BuoiHoc extends Model {
             if ($conThieu <= 0) continue;
 
             // Lấy ngày học lớn nhất hiện có làm mốc bắt đầu sinh tiếp
-            $stmtMaxDate = $this->db->prepare("SELECT MAX(NgayHoc) FROM BUOI_HOC WHERE MaLop = ?");
-            $stmtMaxDate->execute([$maLop]);
-            $maxDate = $stmtMaxDate->fetchColumn();
+            // $stmtMaxDate = $this->db->prepare("SELECT MAX(NgayHoc) FROM BUOI_HOC WHERE MaLop = ?");
+            // $stmtMaxDate->execute([$maLop]);
+            // $maxDate = $stmtMaxDate->fetchColumn();
 
-            if ($maxDate) {
-                $startTs = strtotime('+1 day', strtotime($maxDate));
-            } elseif (!empty($class['NgayBatDau'])) {
-                $startTs = strtotime($class['NgayBatDau']);
-            } else {
-                $startTs = time();
-            }
+            // if ($maxDate) {
+            //     $startTs = strtotime('+1 day', strtotime($maxDate));
+            // } elseif (!empty($class['NgayBatDau'])) {
+            //     $startTs = strtotime($class['NgayBatDau']);
+            // } else {
+            //     $startTs = time();
+            // }
 
-            // Xác định các thứ học hợp lệ
-            $validDays = [];
-            if (!empty($lichByLop[$maLop])) {
-                foreach ($lichByLop[$maLop] as $thu) {
-                    if (isset($mapThu[$thu])) {
-                        $validDays[] = $mapThu[$thu];
-                    }
-                }
-            }
-            // Nếu không có lịch học: mặc định Thứ 2, 4, 6
-            if (empty($validDays)) {
-                $validDays = [1, 3, 5];
-            }
+            // // Xác định các thứ học hợp lệ
+            // $validDays = [];
+            // if (!empty($lichByLop[$maLop])) {
+            //     foreach ($lichByLop[$maLop] as $thu) {
+            //         if (isset($mapThu[$thu])) {
+            //             $validDays[] = $mapThu[$thu];
+            //         }
+            //     }
+            // }
+            // // Nếu không có lịch học: mặc định Thứ 2, 4, 6
+            // if (empty($validDays)) {
+            //     $validDays = [1, 3, 5];
+            // }
 
-            // Sinh các buổi học còn thiếu
-            $count   = 0;
-            $current = $startTs;
-            while ($count < $conThieu) {
-                $weekday = (int)date('w', $current);
-                if (in_array($weekday, $validDays)) {
-                    $stmtInsert->execute([$maLop, date('Y-m-d', $current)]);
-                    $count++;
-                }
-                $current = strtotime('+1 day', $current);
+            // // Sinh các buổi học còn thiếu
+            // $count   = 0;
+            // // $current = $startTs;
+            // while ($count < $conThieu) {
+            //     $weekday = (int)date('w', $current);
+            //     if (in_array($weekday, $validDays)) {
+            //         $stmtInsert->execute([$maLop, date('Y-m-d', $current)]);
+            //         $count++;
+            //     }
+            //     $current = strtotime('+1 day', $current);
+            // }
+            // Chỉ tạo buổi học, chưa có ngày học
+            for ($i = 0; $i < $conThieu; $i++) {
+                $stmtInsert->execute([$maLop]);
             }
         }
     }
+
+    public function setNgayHocIfNull($maBuoi)
+    {
+        $sql = "UPDATE BUOI_HOC SET NgayHoc = NOW() WHERE MaBuoi = :MaBuoi AND NgayHoc IS NULL";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([':MaBuoi' => $maBuoi]);
+    }
+
+    // public function isOver48Hours($maBuoi)
+    // {
+    //     $sql = "SELECT NgayHoc FROM BUOI_HOC WHERE MaBuoi = :MaBuoi";
+    //     $stmt = $this->db->prepare($sql);
+    //     $stmt->execute([':MaBuoi' => $maBuoi]);
+    //     $buoiHoc = $stmt->fetch(PDO::FETCH_ASSOC);
+    //     // Không tìm thấy buổi học
+    //     if (!$buoiHoc) {
+    //         return true;
+    //     }
+    //     // Chưa điểm danh lần nào
+    //     if (empty($buoiHoc['NgayHoc'])) {
+    //         return false;
+    //     }
+    //     $ngayHoc = strtotime($buoiHoc['NgayHoc']);
+    //     $hienTai = time();
+    //     $chenhLech = $hienTai - $ngayHoc;
+    //     // 48 giờ = 172800 giây
+    //     return $chenhLech > 2;
+    // }
 }

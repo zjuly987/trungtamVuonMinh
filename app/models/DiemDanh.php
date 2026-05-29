@@ -106,4 +106,40 @@ class DiemDanh extends Model {
         }
         return $classes;
     }
+
+    public function isBuoiBeforeCompleted($maLop, $maBuoi)
+    {
+        $sql = " SELECT MaBuoi FROM BUOI_HOC WHERE MaLop = :MaLop ORDER BY MaBuoi ASC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':MaLop' => $maLop]);
+        $listBuoi = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Nếu không có buổi học
+        if (empty($listBuoi)) {
+            return true;
+        }
+        $currentIndex = null;
+        foreach ($listBuoi as $index => $buoi) {
+            if ((int)$buoi['MaBuoi'] === (int)$maBuoi) {
+                $currentIndex = $index;
+                break;
+            }
+        }
+        // Không tìm thấy buổi hiện tại
+        if ($currentIndex === null) {
+            return false;
+        }
+        // Nếu là buổi đầu tiên -> luôn cho phép
+        if ($currentIndex === 0) {
+            return true;
+        }
+        // Lấy mã buổi trước
+        $maBuoiTruoc = $listBuoi[$currentIndex - 1]['MaBuoi'];
+        // Kiểm tra buổi trước đã điểm danh chưa
+        $sqlCheck = " SELECT NgayHoc FROM BUOI_HOC WHERE MaBuoi = :MaBuoi";
+        $stmt = $this->db->prepare($sqlCheck);
+        $stmt->execute([':MaBuoi' => $maBuoiTruoc]);
+        $prevBuoi = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Có ngày học => đã điểm danh
+        return !empty($prevBuoi['NgayHoc']);
+    }
 }

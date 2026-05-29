@@ -72,13 +72,21 @@ class StudentController extends Controller
             }
 
             // ===== NẾU KHÔNG CÓ LỖI =====
-            if (empty($errors)) {
+if (empty($errors)) {
 
-                $this->model->create($data);
+    // kiểm tra trùng học sinh
+    if ($this->model->isDuplicate($data)) {
 
-                header('Location: ?url=student/index');
-                exit;
-            }
+        $errors['duplicate'] = 'Học sinh đã tồn tại trong hệ thống';
+
+    } else {
+
+        $this->model->create($data);
+
+        header('Location: ?url=student/index');
+        exit;
+    }
+}
         }
 
         $this->view('student/create', [

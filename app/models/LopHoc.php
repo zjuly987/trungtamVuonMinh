@@ -117,15 +117,13 @@ class LopHoc extends Model
 public function isFull($maLop)
 {
     $stmt = $this->db->prepare("
-        SELECT l.SiSo, COUNT(c.MaHocSinh) as SoHienTai
-        FROM LOP_HOC l
-        LEFT JOIN CHI_TIET_LOP c ON l.MaLop = c.MaLop
-        WHERE l.MaLop = ?
-        GROUP BY l.MaLop
+        SELECT COUNT(MaHocSinh) as SoHienTai
+        FROM CHI_TIET_LOP
+        WHERE MaLop = ?
     ");
     $stmt->execute([$maLop]);
     $row = $stmt->fetch();
-    return $row && $row['SoHienTai'] >= $row['SiSo'];
+    return $row && $row['SoHienTai'] >= 20;
 }
 public function isActive($maLop)
 {
@@ -165,22 +163,19 @@ public function deleteSchedule($id)
 }
 public function update($id, $data)
 {
-    // Đếm số học sinh thực tế trong lớp
-    $stmt = $this->db->prepare("SELECT COUNT(*) FROM CHI_TIET_LOP WHERE MaLop = ?");
-    $stmt->execute([$id]);
-    $siSoThucTe = $stmt->fetchColumn();
-
-    $sql = "UPDATE LOP_HOC SET TenLop=?, SoBuoi=?, SiSo=?, NgayBatDau=?, MaGiaoVien=?
+    $sql = "UPDATE LOP_HOC SET TenLop=?, SoBuoi=?, NgayBatDau=?, MaGiaoVien=?
             WHERE MaLop=?";
     $stmt = $this->db->prepare($sql);
-    return $stmt->execute([
+    $result = $stmt->execute([
         $data['TenLop'],
         $data['SoBuoi'],
-        $siSoThucTe,  // dùng số thực tế thay vì $_POST['SiSo']
         $data['NgayBatDau'],
         $data['MaGiaoVien'] ?: null,
         $id
     ]);
+    // Sau khi update, sync lại sĩ số thực tế
+    $this->syncSiSo($id);
+    return $result;
 }
     // Tạo buổi học tự động
     public function taoBuoiHoc($maLop, $ngayBatDau, $thuHoc, $soBuoi)
