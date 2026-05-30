@@ -185,21 +185,13 @@
 
                         </a>
 
-                        <form
-                        method="POST"
-                        action="?url=teacher/delete&id=<?= $t['MaGiaoVien'] ?>"
-                        >
+                        <a href="#"
+                        class="btn-delete"
+                        onclick="checkDelete(event, <?= $t['MaGiaoVien'] ?>)">
+                            
+                            <i class="bi bi-trash"></i> Xóa
 
-                        <button class="btn-delete">
-
-                            <i class="bi bi-trash"></i>
-                        
-
-                            Xóa
-
-                        </button>
-
-                        </form>
+                        </a>
 
                     </div>
 
@@ -216,3 +208,54 @@
     </div>
 
 </div>
+<div id="teacher-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+
+    <div class="teacher-popup">
+
+        <div class="popup-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+
+        <div class="popup-title">
+            Giáo viên vẫn còn tồn tại trong lớp
+        </div>
+
+        <button onclick="closeModal()">
+            Đóng
+        </button>
+
+    </div>
+
+</div>
+<script>
+function checkDelete(event, id){
+    event.preventDefault();
+
+    fetch("?url=teacher/checkDelete&id=" + id)
+        .then(res => res.text())
+        .then(text => {
+
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.log("NOT JSON:", text);
+                data = { inClass: false };
+            }
+
+            if(data.inClass === true){
+                document.getElementById('teacher-modal').style.display = 'flex';
+                return;
+            }
+
+            if(confirm("Bạn có chắc chắn muốn xóa giáo viên này không?")){
+                window.location.href = "?url=teacher/delete&id=" + id;
+            }
+        });
+}
+
+function closeModal(){
+    document.getElementById('teacher-modal').style.display = 'none';
+}
+</script>

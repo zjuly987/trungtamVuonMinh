@@ -32,49 +32,74 @@ class TeacherController extends Controller {
 
     public function create(){
 
-        $errors=[];
+        $errors = [];
+        $old = [];
 
-        if($_SERVER['REQUEST_METHOD']=="POST"){
+        if($_SERVER['REQUEST_METHOD'] == "POST"){
 
-            $data=[
-
-                'TenGiaoVien'=>trim($_POST['TenGiaoVien']),
-                'ChuyenMon'=>trim($_POST['ChuyenMon']),
-                'DiaChi'=>trim($_POST['DiaChi']),
-                'SoDienThoai'=>trim($_POST['SoDienThoai']),
-                'MaTaiKhoan'=>trim($_POST['MaTaiKhoan'])
-
+            $data = [
+                'TenGiaoVien' => trim($_POST['TenGiaoVien'] ?? ''),
+                'GioiTinh' => $_POST['GioiTinh'] ?? '',
+                'SoDienThoai' => trim($_POST['SoDienThoai'] ?? ''),
+                'CCCD' => trim($_POST['CCCD'] ?? ''),
+                'TruongDangGiangDay' => trim($_POST['TruongDangGiangDay'] ?? ''),
+                'DiaChi' => trim($_POST['DiaChi'] ?? ''),
+                'ChuyenMon' => trim($_POST['ChuyenMon'] ?? ''),
+                'MaTaiKhoan' => trim($_POST['MaTaiKhoan'] ?? '')
             ];
 
+            $old = $data;
+
+            // VALIDATE
             if(empty($data['TenGiaoVien'])){
-                $errors['TenGiaoVien']="Không được để trống";
+                $errors['TenGiaoVien'] = "Họ tên là bắt buộc";
+            } elseif (preg_match('/\d/', $data['TenGiaoVien'])) {
+                $errors['TenGiaoVien'] = "Họ tên không được chứa số";
             }
 
-            if(empty($data['ChuyenMon'])){
-                $errors['ChuyenMon']="Không được để trống";
+            if(empty($data['GioiTinh'])){
+                $errors['GioiTinh'] = "Giới tính là bắt buộc";
             }
 
-            if(strlen($data['SoDienThoai'])!=10){
-                $errors['SoDienThoai']="SĐT phải đủ 10 số";
+            if(empty($data['SoDienThoai'])){
+                $errors['SoDienThoai'] = "SĐT là bắt buộc";
+            } elseif (!preg_match('/^\d+$/', $data['SoDienThoai'])) {
+                $errors['SoDienThoai'] = "SĐT chỉ được nhập số";
+            } elseif (strlen($data['SoDienThoai']) != 10) {
+                $errors['SoDienThoai'] = "SĐT phải đủ 10 số";
+            }
+
+            if(empty($data['CCCD'])){
+                $errors['CCCD'] = "CCCD là bắt buộc";
+            }
+
+            if(empty($data['TruongDangGiangDay'])){
+                $errors['TruongDangGiangDay'] = "Trường là bắt buộc";
+            }
+
+            // CHECK TRÙNG
+            if($this->model->existsTeacher($data['CCCD'], $data['SoDienThoai'])){
+                $errors['exists'] = "Giáo viên đã tồn tại";
             }
 
             if(empty($errors)){
 
-                $this->model->create($data);
+                $result = $this->model->create($data);
 
-                header("Location:?url=teacher");
-
-                exit;
+                if($result === "duplicate"){
+                    $errors['exists'] = "Giáo viên đã tồn tại";
+                } else {
+                    header("Location:?url=teacher&success=1");
+                    exit;
+                }
             }
         }
 
-        $this->view(
-            'teacher/create',
-            [
-                'role'=>'secretary',
-                'errors'=>$errors
-            ]
-        );
+        $this->view('teacher/create', [
+            'role' => 'secretary',
+            'errors' => $errors,
+            'old' => $old
+        ]);
     }
 
     public function edit(){
@@ -82,107 +107,105 @@ class TeacherController extends Controller {
         $id = $_GET['id'] ?? null;
 
         if(!$id){
-
             header("Location:?url=teacher");
-
             exit;
         }
 
         $teacher = $this->model->getById($id);
 
-        $errors=[];
+        $errors = [];
+        $old = $teacher;
 
-        if($_SERVER['REQUEST_METHOD']=="POST"){
+        if($_SERVER['REQUEST_METHOD'] == "POST"){
 
-            $data=[
+        $data = [
+            'TenGiaoVien' => trim($_POST['TenGiaoVien'] ?? ''),
+            'GioiTinh' => $_POST['GioiTinh'] ?? '',
+            'SoDienThoai' => trim($_POST['SoDienThoai'] ?? ''),
+            'CCCD' => trim($_POST['CCCD'] ?? ''),
+            'TruongDangGiangDay' => trim($_POST['TruongDangGiangDay'] ?? ''),
+            'DiaChi' => trim($_POST['DiaChi'] ?? ''),
+            'ChuyenMon' => trim($_POST['ChuyenMon'] ?? ''),
+            // KHÔNG NHẬN MaTaiKhoan TỪ FORM
+        ];
 
-                'TenGiaoVien'=>trim($_POST['TenGiaoVien']),
+            $old = $data;
 
-                'ChuyenMon'=>trim($_POST['ChuyenMon']),
+            // VALIDATE
+            if(empty($data['TenGiaoVien'])){
+                $errors['TenGiaoVien'] = "Họ tên là bắt buộc";
+            } elseif (preg_match('/\d/', $data['TenGiaoVien'])){
+                $errors['TenGiaoVien'] = "Họ tên không được chứa số";
+            }
 
-                'DiaChi'=>trim($_POST['DiaChi']),
+            if(empty($data['GioiTinh'])){
+                $errors['GioiTinh'] = "Giới tính là bắt buộc";
+            }
 
-                'SoDienThoai'=>trim($_POST['SoDienThoai']),
+            if(empty($data['SoDienThoai'])){
+                $errors['SoDienThoai'] = "SĐT là bắt buộc";
+            } elseif (!preg_match('/^\d+$/', $data['SoDienThoai'])){
+                $errors['SoDienThoai'] = "SĐT chỉ được nhập số";
+            } elseif (strlen($data['SoDienThoai']) != 10){
+                $errors['SoDienThoai'] = "SĐT phải đủ 10 số";
+            }
 
-                'MaTaiKhoan'=>trim($_POST['MaTaiKhoan'])
+            if(empty($data['CCCD'])){
+                $errors['CCCD'] = "CCCD là bắt buộc";
+            }
 
-            ];
+            if(empty($data['TruongDangGiangDay'])){
+                $errors['TruongDangGiangDay'] = "Trường là bắt buộc";
+            }
+
+            // CHECK TRÙNG (TRỪ CHÍNH NÓ)
+            if($this->model->existsTeacherEdit($data['CCCD'], $data['SoDienThoai'], $id)){
+                $errors['exists'] = "Giáo viên đã tồn tại";
+            }
 
             if(empty($errors)){
 
-                $this->model->update(
-                    $id,
-                    $data
-                );
+                $this->model->update($id, $data);
 
-                header("Location:?url=teacher");
-
+                header("Location:?url=teacher&success=updated");
                 exit;
             }
         }
 
-        $this->view(
-
-            'teacher/edit',
-
-            [
-
-                'role'=>'secretary',
-
-                'activeMenu'=>'teacher',
-
-                'teacher'=>$teacher,
-
-                'errors'=>$errors
-
-            ]
-
-        );
+        $this->view('teacher/edit', [
+            'role' => 'secretary',
+            'teacher' => $teacher,
+            'old' => $old,
+            'errors' => $errors
+        ]);
     }
 
-    public function delete()
+    // ✔ CHECK TRƯỚC KHI XÓA (AJAX)
+    public function checkDelete()
     {
+        header('Content-Type: application/json');
 
         $id = $_GET['id'] ?? null;
 
+        $inClass = $this->model->isTeacherInClass($id);
+
+        echo json_encode(['inClass' => $inClass]);
+        exit;
+    }
+
+    // ✔ XÓA THẬT
+    public function delete()
+    {
+        $id = $_GET['id'] ?? null;
+
         if(!$id){
-
-            header(
-                "Location:?url=teacher"
-            );
-
+            header("Location:?url=teacher");
             exit;
         }
 
-        if(
-            $this->model
-            ->isTeacherInClass($id)
-        ){
+        $this->model->delete($id);
 
-            header(
-                "Location:?url=teacher&error=foreign"
-            );
-
-            exit;
-        }
-
-        $deleted =
-            $this->model
-            ->delete($id);
-
-        if(!$deleted){
-
-            header(
-                "Location:?url=teacher&error=foreign"
-            );
-
-            exit;
-        }
-
-        header(
-            "Location:?url=teacher"
-        );
-
+        header("Location:?url=teacher&success=deleted");
         exit;
     }
 }

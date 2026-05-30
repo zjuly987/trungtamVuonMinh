@@ -28,25 +28,36 @@ class GiaoVien extends Model {
 
     public function create($data) {
 
-        $stmt = $this->db->prepare("
-            INSERT INTO giao_vien
-            (
-                TenGiaoVien,
-                ChuyenMon,
-                DiaChi,
-                SoDienThoai,
-                MaTaiKhoan
-            )
-            VALUES (?, ?, ?, ?, ?)
-        ");
+        try {
+            $stmt = $this->db->prepare("
+                INSERT INTO giao_vien
+                (
+                    TenGiaoVien,
+                    GioiTinh,
+                    SoDienThoai,
+                    CCCD,
+                    TruongDangGiangDay,
+                    DiaChi,
+                    ChuyenMon,
+                    MaTaiKhoan
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ");
 
-        return $stmt->execute([
-            $data['TenGiaoVien'],
-            $data['ChuyenMon'],
-            $data['DiaChi'],
-            $data['SoDienThoai'],
-            $data['MaTaiKhoan']
-        ]);
+            return $stmt->execute([
+                $data['TenGiaoVien'],
+                $data['GioiTinh'],
+                $data['SoDienThoai'],
+                $data['CCCD'],
+                $data['TruongDangGiangDay'],
+                $data['DiaChi'],
+                $data['ChuyenMon'],
+                $data['MaTaiKhoan']
+            ]);
+
+        } catch (PDOException $e) {
+            return "duplicate";
+        }
     }
 
     public function update($id, $data) {
@@ -55,74 +66,49 @@ class GiaoVien extends Model {
             UPDATE giao_vien
             SET
                 TenGiaoVien=?,
-                ChuyenMon=?,
-                DiaChi=?,
+                GioiTinh=?,
                 SoDienThoai=?,
-                MaTaiKhoan=?
+                CCCD=?,
+                TruongDangGiangDay=?,
+                DiaChi=?,
+                ChuyenMon=?
             WHERE MaGiaoVien=?
         ");
 
         return $stmt->execute([
             $data['TenGiaoVien'],
-            $data['ChuyenMon'],
-            $data['DiaChi'],
+            $data['GioiTinh'],
             $data['SoDienThoai'],
-            $data['MaTaiKhoan'],
+            $data['CCCD'],
+            $data['TruongDangGiangDay'],
+            $data['DiaChi'],
+            $data['ChuyenMon'],
             $id
         ]);
     }
 
     public function isTeacherInClass($id)
     {
-        $tables = ['lop_hoc'];
+        $stmt = $this->db->prepare("
+            SELECT 1
+            FROM lop_hoc
+            WHERE MaGiaoVien = ?
+            LIMIT 1
+        ");
 
-        foreach($tables as $table){
+        $stmt->execute([$id]);
 
-            try{
-
-                $sql = "
-                    SELECT 1
-                    FROM $table
-                    WHERE MaGiaoVien = ?
-                    LIMIT 1
-                ";
-
-                $stmt = $this->db->prepare($sql);
-
-                $stmt->execute([$id]);
-
-                if($stmt->fetch()){
-
-                    return true;
-                }
-
-            }
-            catch(Exception $e){
-
-                continue;
-            }
-        }
-
-        return false;
+        return $stmt->fetch() ? true : false;
     }
+
     public function delete($id)
     {
-        try{
+        $stmt = $this->db->prepare("
+            DELETE FROM giao_vien
+            WHERE MaGiaoVien = ?
+        ");
 
-            $stmt = $this->db->prepare(
-                "
-                DELETE FROM giao_vien
-                WHERE MaGiaoVien = ?
-                "
-            );
-
-            return $stmt->execute([$id]);
-
-        }
-        catch(PDOException $e){
-
-            return false;
-        }
+        return $stmt->execute([$id]);
     }
 
     public function search($keyword) {
@@ -147,5 +133,31 @@ class GiaoVien extends Model {
         ]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function existsTeacher($cccd, $sdt)
+    {
+        $stmt = $this->db->prepare("
+            SELECT 1 FROM giao_vien
+            WHERE CCCD = ? OR SoDienThoai = ?
+            LIMIT 1
+        ");
+
+        $stmt->execute([$cccd, $sdt]);
+
+        return $stmt->fetch() ? true : false;
+    }
+    public function existsTeacherEdit($cccd, $sdt, $id)
+    {
+        $stmt = $this->db->prepare("
+            SELECT 1
+            FROM giao_vien
+            WHERE (CCCD = ? OR SoDienThoai = ?)
+            AND MaGiaoVien != ?
+            LIMIT 1
+        ");
+
+        $stmt->execute([$cccd, $sdt, $id]);
+
+        return $stmt->fetch() ? true : false;
     }
 }
