@@ -6,10 +6,27 @@ class DiemHocTap extends Model
     public function getClassesByAccount($maTaiKhoan)
     {
         $sql = "
-            SELECT l.*
+            SELECT
+                l.MaLop,
+                l.TenLop,
+                GROUP_CONCAT(
+                    CONCAT(lh.Thu, ' - ', lh.Ca)
+                    SEPARATOR ', '
+                ) AS LichHoc,
+                GROUP_CONCAT(
+                    DISTINCT p.TenPhong
+                    SEPARATOR ', '
+                ) AS PhongHoc
             FROM lop_hoc l
-            JOIN giao_vien gv ON gv.MaGiaoVien = l.MaGiaoVien
+            JOIN giao_vien gv
+                ON gv.MaGiaoVien = l.MaGiaoVien
+            LEFT JOIN lich_hoc lh
+                ON lh.MaLop = l.MaLop
+            LEFT JOIN phong_hoc p
+                ON p.MaPhong = lh.MaPhong
             WHERE gv.MaTaiKhoan = :maTaiKhoan
+            GROUP BY l.MaLop, l.TenLop
+            ORDER BY l.MaLop
         ";
 
         $stmt = $this->db->prepare($sql);
