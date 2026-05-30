@@ -55,8 +55,8 @@
 
                     <?php
                         $tx = $s['DTX'] ?? null;
-$kt = $s['KT'] ?? null;
-$thi = $s['Thi'] ?? null;
+                        $kt = $s['KT'] ?? null;
+                        $thi = $s['Thi'] ?? null;
                         $dtb = ($tx + $kt*2 + $thi*3) / 6;
                     ?>
 
