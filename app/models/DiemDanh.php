@@ -83,7 +83,8 @@ class DiemDanh extends Model {
         $stmt->execute($params);
         $classes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         // Lấy lịch học
-        $sqlLich = "SELECT MaLop, Thu, Ca, MaPhong FROM LICH_HOC";
+        $sqlLich = "SELECT MaLop, Thu, Ca, TenPhong FROM LICH_HOC JOIN PHONG_HOC 
+        ON LICH_HOC.MaPhong = PHONG_HOC.MaPhong";
         $stmtLich = $this->db->prepare($sqlLich);
         $stmtLich->execute();
         $schedules = $stmtLich->fetchAll(PDO::FETCH_ASSOC);
@@ -94,7 +95,7 @@ class DiemDanh extends Model {
             foreach ($schedules as $s) {
                 if ($s['MaLop'] == $class['MaLop']) {
                     $lichArray[] = $s['Thu'] . " " . $s['Ca'];
-                    $phongArray[] = $s['MaPhong'];
+                    $phongArray[] = $s['TenPhong'];
                 }
             }
             $class['LichHoc'] = !empty($lichArray)
