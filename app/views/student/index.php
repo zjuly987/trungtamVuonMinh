@@ -1,8 +1,11 @@
-<?php
-// View: Danh sách học sinh — Ảnh 1 style
-// Nhúng vào layout dashboard, controller truyền $students
+<?php if (($_GET['error'] ?? '') === 'in_class'): ?>
+<script>
+    alert('⚠️ Không thể xóa!\nHọc sinh này đang có trong lớp học.\nVui lòng xóa khỏi lớp trước.');
+</script>
+<?php endif; ?>
 
-// Sắp xếp theo MaHocSinh (số nguyên) từ nhỏ đến lớn
+<?php
+// Sắp xếp theo MaHocSinh từ nhỏ đến lớn
 if (!empty($students)) {
     usort($students, function($a, $b) {
         return (int)$a['MaHocSinh'] - (int)$b['MaHocSinh'];
@@ -17,8 +20,6 @@ if (!empty($students)) {
     min-height: 100%;
     font-family: 'Segoe UI', sans-serif;
   }
-
-  /* Breadcrumb */
   .student-breadcrumb {
     font-size: 13px;
     color: #6b7280;
@@ -27,8 +28,6 @@ if (!empty($students)) {
   .student-breadcrumb a { color: #3b82f6; text-decoration: none; }
   .student-breadcrumb a:hover { text-decoration: underline; }
   .student-breadcrumb span { margin: 0 6px; color: #9ca3af; }
-
-  /* Toolbar */
   .student-toolbar {
     display: flex;
     align-items: center;
@@ -37,7 +36,6 @@ if (!empty($students)) {
     gap: 12px;
     flex-wrap: wrap;
   }
-
   .search-group {
     display: flex;
     align-items: center;
@@ -58,7 +56,6 @@ if (!empty($students)) {
   }
   .search-group input:focus { border-color: #3b82f6; background: #fff; }
   .search-group input::placeholder { color: #9ca3af; }
-
   .btn-search {
     padding: 8px 20px;
     background: #22c55e;
@@ -72,7 +69,6 @@ if (!empty($students)) {
     white-space: nowrap;
   }
   .btn-search:hover { background: #16a34a; }
-
   .btn-add {
     display: inline-flex;
     align-items: center;
@@ -89,8 +85,6 @@ if (!empty($students)) {
     white-space: nowrap;
   }
   .btn-add:hover { background: #f0f7ff; border-color: #3b82f6; color: #2563eb; }
-
-  /* Section title */
   .section-title {
     font-size: 13px;
     font-weight: 700;
@@ -101,20 +95,16 @@ if (!empty($students)) {
     padding-bottom: 6px;
     border-bottom: 2px solid #e5e7eb;
   }
-
-  /* Table */
   .student-table-wrap {
     overflow-x: auto;
     border-radius: 8px;
     border: 1px solid #e5e7eb;
   }
-
   .student-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 13.5px;
   }
-
   .student-table thead tr { background: #1e3a5f; color: #fff; }
   .student-table thead th {
     padding: 11px 14px;
@@ -124,43 +114,24 @@ if (!empty($students)) {
     text-align: left;
     white-space: nowrap;
   }
-  .student-table thead th:nth-child(1) { width: 100px; }        /* Mã học sinh */
-.student-table thead th:nth-child(2) { min-width: 200px; }    /* Họ và Tên — rộng ra */
-.student-table thead th:nth-child(3) { width: 110px; }        /* Ngày sinh */
-.student-table thead th:nth-child(4) { min-width: 160px; }    /* Địa chỉ */
-.student-table thead th:nth-child(5) { width: 130px; }        /* Số điện thoại */
-.student-table thead th:last-child   { width: 120px; text-align: center; }
-
-  .student-table tbody tr {
-    border-bottom: 1px solid #f0f0f0;
-    transition: background 0.15s;
-  }
+  .student-table thead th:nth-child(1) { width: 100px; }
+  .student-table thead th:nth-child(2) { min-width: 200px; }
+  .student-table thead th:nth-child(3) { width: 110px; }
+  .student-table thead th:nth-child(4) { min-width: 160px; }
+  .student-table thead th:nth-child(5) { width: 130px; }
+  .student-table thead th:last-child   { width: 120px; text-align: center; }
+  .student-table tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.15s; }
   .student-table tbody tr:last-child { border-bottom: none; }
   .student-table tbody tr:hover { background: #f0f7ff; }
   .student-table tbody tr:nth-child(even) { background: #f8fafc; }
   .student-table tbody tr:nth-child(even):hover { background: #e8f2ff; }
-
   .student-table tbody td {
     padding: 10px 14px;
     color: #374151;
     vertical-align: middle;
   }
   .student-table tbody td:first-child { text-align: center; color: #6b7280; font-weight: 600; }
-
-  /* Gender badge */
-  .badge-gender {
-    display: inline-block;
-    padding: 2px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-  }
-  .badge-nu  { background: #fce7f3; color: #be185d; }
-  .badge-nam { background: #dbeafe; color: #1d4ed8; }
-
-  /* Action buttons */
   .action-group { display: flex; gap: 6px; justify-content: center; }
-
   .btn-edit, .btn-delete {
     display: inline-flex;
     align-items: center;
@@ -173,11 +144,11 @@ if (!empty($students)) {
     border: none;
     cursor: pointer;
     transition: opacity 0.15s;
+    background: transparent;
   }
-.btn-edit   { background: transparent; color: #1A365D; }
-.btn-delete { background: transparent; color: #dc2626; }
+  .btn-edit   { color: #1A365D; }
+  .btn-delete { color: #dc2626; }
   .btn-edit:hover, .btn-delete:hover { opacity: 0.82; }
-
   .empty-row td {
     text-align: center;
     color: #9ca3af;
@@ -188,14 +159,12 @@ if (!empty($students)) {
 
 <div class="student-content">
 
-  <!-- Breadcrumb -->
   <div class="student-breadcrumb">
     <a href="?url=dashboard">Trang chủ</a>
     <span>›</span>
     Quản lý học sinh
   </div>
 
-  <!-- Toolbar: search + add -->
   <div class="student-toolbar">
     <form method="GET" action="" style="display:contents;">
       <input type="hidden" name="url" value="student">
@@ -208,16 +177,12 @@ if (!empty($students)) {
         >
         <button type="submit" class="btn-search">Tra cứu</button>
       </div>
-      <a href="?url=student/create" class="btn-add">
-        + Thêm học sinh
-      </a>
+      <a href="?url=student/create" class="btn-add">+ Thêm học sinh</a>
     </form>
   </div>
 
-  <!-- Section title -->
   <div class="section-title">Danh sách học sinh</div>
 
-  <!-- Table -->
   <div class="student-table-wrap">
     <table class="student-table">
       <thead>
@@ -226,53 +191,42 @@ if (!empty($students)) {
           <th>Họ và Tên</th>
           <th>Ngày sinh</th>
           <th>Địa chỉ</th>
-          <th>Số điện thoại</th>
+          <th>Số điện thoại liên hệ</th>
           <th>Thao tác</th>
         </tr>
       </thead>
-     <tbody>
-  <?php if (empty($students)): ?>
-    <tr class="empty-row">
-      <td colspan="7">Chưa có học sinh nào.</td>
-    </tr>
-  <?php else: ?>
-    <?php foreach ($students as $i => $s): ?>
-    <tr>
-      
-
-      <td><?= htmlspecialchars($s['MaHocSinh']) ?></td>
-
-      <td><?= htmlspecialchars($s['TenHocSinh']) ?></td>
-
-      <td>
-        <?= !empty($s['NgaySinh']) 
-              ? date('d/m/Y', strtotime($s['NgaySinh'])) 
-              : '' ?>
-      </td>
-
-      <td><?= htmlspecialchars($s['DiaChi'] ?? '') ?></td>
-
-      <td><?= htmlspecialchars($s['SoDienThoai'] ?? '') ?></td>
-
-      <td>
-        <div class="action-group">
-         <a href="?url=student/edit&id=<?= $s['MaHocSinh'] ?>"
-   class="btn-edit">
-    <i class="bi bi-pencil-square"></i> Sửa
-</a>
-
-          <form method="POST" action="?url=student/delete&id=<?= $s['MaHocSinh'] ?>"
-      onsubmit="return confirm('Bạn có chắc muốn xóa học sinh này?')">
-    <button type="submit" class="btn-delete">
-        <i class="bi bi-trash"></i> Xóa
-    </button>
-</form>
-        </div>
-      </td>
-    </tr>
-    <?php endforeach; ?>
-  <?php endif; ?>
-</tbody>
+      <tbody>
+        <?php if (empty($students)): ?>
+          <tr class="empty-row">
+            <td colspan="6">Chưa có học sinh nào.</td>
+          </tr>
+        <?php else: ?>
+          <?php foreach ($students as $s): ?>
+          <tr>
+            <td><?= htmlspecialchars($s['MaHocSinh']) ?></td>
+            <td><?= htmlspecialchars($s['TenHocSinh']) ?></td>
+            <td><?= !empty($s['NgaySinh']) ? date('d/m/Y', strtotime($s['NgaySinh'])) : '' ?></td>
+            <td><?= htmlspecialchars($s['DiaChi'] ?? '') ?></td>
+            <td><?= htmlspecialchars($s['SoDienThoai'] ?? '') ?></td>
+            <td>
+              <div class="action-group">
+                <a href="?url=student/edit&id=<?= $s['MaHocSinh'] ?>" class="btn-edit">
+                  <i class="bi bi-pencil-square"></i> Sửa
+                </a>
+                <!-- ✅ id nằm trong POST, không phải URL -->
+                <form method="POST" action="?url=student/delete"
+                      onsubmit="return confirm('Bạn có chắc muốn xóa học sinh này?')">
+                  <input type="hidden" name="id" value="<?= $s['MaHocSinh'] ?>">
+                  <button type="submit" class="btn-delete">
+                    <i class="bi bi-trash"></i> Xóa
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          <?php endforeach; ?>
+        <?php endif; ?>
+      </tbody>
     </table>
   </div>
 
