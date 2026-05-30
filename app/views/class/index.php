@@ -241,7 +241,7 @@ if (!empty($classes)) {
             <tbody>
                 <?php if (empty($classes)): ?>
                     <tr class="empty-row">
-                        <td colspan="9">Chưa có lớp học nào.</td>
+                        <td colspan="9">Không có lớp học nào.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($classes as $class): ?>
