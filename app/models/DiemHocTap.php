@@ -26,9 +26,9 @@ class DiemHocTap extends Model
                 hs.MaHocSinh,
                 hs.TenHocSinh,
 
-                COALESCE(SUM(CASE WHEN d.LanKiemTra = 'TX' THEN d.Diem ELSE 0 END),0) AS DTX,
-                COALESCE(SUM(CASE WHEN d.LanKiemTra = 'KT' THEN d.Diem ELSE 0 END),0) AS KT,
-                COALESCE(SUM(CASE WHEN d.LanKiemTra = 'THI' THEN d.Diem ELSE 0 END),0) AS Thi
+                MAX(CASE WHEN d.LanKiemTra='TX' THEN d.Diem END) AS DTX,
+                MAX(CASE WHEN d.LanKiemTra='KT' THEN d.Diem END) AS KT,
+                MAX(CASE WHEN d.LanKiemTra='THI' THEN d.Diem END) AS Thi
 
             FROM chi_tiet_lop ctl
 
@@ -49,16 +49,53 @@ class DiemHocTap extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function saveDiem($maHS, $maLop, $loai, $diem)
+    // public function saveDiem($maHS, $maLop, $loai, $diem)
+    // {
+    //     $sql = "
+    //         INSERT INTO diem_hoc_tap (MaHocSinh, MaLop, LanKiemTra, Diem)
+    //         VALUES (?, ?, ?, ?)
+    //         ON DUPLICATE KEY UPDATE Diem = VALUES(Diem)
+    //     ";
+
+    //     $stmt = $this->db->prepare($sql);
+    //     return $stmt->execute([$maHS, $maLop, $loai, $diem]);
+    // }
+
+    public function insertDiem($maHS, $maLop, $loai, $diem)
     {
         $sql = "
-            INSERT INTO diem_hoc_tap (MaHocSinh, MaLop, LanKiemTra, Diem)
+            INSERT INTO diem_hoc_tap
+            (MaHocSinh, MaLop, LanKiemTra, Diem)
             VALUES (?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE Diem = VALUES(Diem)
         ";
 
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$maHS, $maLop, $loai, $diem]);
+
+        try {
+            return $stmt->execute([$maHS, $maLop, $loai, $diem]);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+    
+    public function updateDiem($maHS, $maLop, $loai, $diem)
+    {
+        $sql = "
+            UPDATE diem_hoc_tap
+            SET Diem = ?
+            WHERE MaHocSinh = ?
+            AND MaLop = ?
+            AND LanKiemTra = ?
+        ";
+
+        $stmt = $this->db->prepare($sql);
+
+        return $stmt->execute([
+            $diem,
+            $maHS,
+            $maLop,
+            $loai
+        ]);
     }
 
     public function tinhDTB($tx, $kt, $thi)

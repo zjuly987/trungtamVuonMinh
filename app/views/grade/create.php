@@ -54,9 +54,9 @@
                 <?php foreach ($students as $i => $s): ?>
 
                     <?php
-                        $tx = $s['DTX'] ?? 0;
-                        $kt = $s['KT'] ?? 0;
-                        $thi = $s['Thi'] ?? 0;
+                        $tx = $s['DTX'] ?? null;
+$kt = $s['KT'] ?? null;
+$thi = $s['Thi'] ?? null;
                         $dtb = ($tx + $kt*2 + $thi*3) / 6;
                     ?>
 
@@ -66,24 +66,33 @@
                         <td class="name-col"><?= $s['TenHocSinh'] ?></td>
 
                         <td>
-                            <input class="score-input tx"
-                                   data-original="<?= $tx ?>"
-                                   name="data[<?= $s['MaHocSinh'] ?>][DTX]"
-                                   value="<?= $tx ?>">
+                            <input
+                                class="score-input tx"
+                                data-original="<?= $tx ?? '' ?>"
+                                name="data[<?= $s['MaHocSinh'] ?>][DTX]"
+                                value="<?= $tx ?? '' ?>"
+                                <?= $tx !== null ? 'readonly' : '' ?>
+                            >
                         </td>
 
                         <td>
-                            <input class="score-input kt"
-                                   data-original="<?= $kt ?>"
-                                   name="data[<?= $s['MaHocSinh'] ?>][KT]"
-                                   value="<?= $kt ?>">
+                            <input
+                                class="score-input kt"
+                                data-original="<?= $kt ?? '' ?>"
+                                name="data[<?= $s['MaHocSinh'] ?>][KT]"
+                                value="<?= $kt ?? '' ?>"
+                                <?= $kt !== null ? 'readonly' : '' ?>
+                            >
                         </td>
 
                         <td>
-                            <input class="score-input thi"
-                                   data-original="<?= $thi ?>"
-                                   name="data[<?= $s['MaHocSinh'] ?>][Thi]"
-                                   value="<?= $thi ?>">
+                            <input
+                                class="score-input thi"
+                                data-original="<?= $thi ?? '' ?>"
+                                name="data[<?= $s['MaHocSinh'] ?>][Thi]"
+                                value="<?= $thi ?? '' ?>"
+                                <?= $thi !== null ? 'readonly' : '' ?>
+                            > 
                         </td>
 
                         <td class="dtb"><?= number_format($dtb,1) ?></td>
@@ -124,23 +133,38 @@ function resetForm() {
 
     document.querySelectorAll('.score-input').forEach(input => {
 
-        let original = input.getAttribute('data-original');
+        let original = input.dataset.original;
 
-        input.value = (original !== null && original !== '')
-            ? original
-            : 0;
+        input.value =
+            (original !== undefined &&
+             original !== null &&
+             original !== '')
+                ? original
+                : '';
     });
 
-    document.querySelectorAll('tr').forEach(row => {
+    document.querySelectorAll('tbody tr').forEach(row => {
 
-        let tx  = parseFloat(row.querySelector('.tx')?.value || 0);
-        let kt  = parseFloat(row.querySelector('.kt')?.value || 0);
-        let thi = parseFloat(row.querySelector('.thi')?.value || 0);
+        let txVal  = row.querySelector('.tx')?.value || '';
+        let ktVal  = row.querySelector('.kt')?.value || '';
+        let thiVal = row.querySelector('.thi')?.value || '';
 
-        let dtb = (tx + kt*2 + thi*3) / 6;
+        let tx  = txVal  === '' ? 0 : parseFloat(txVal);
+        let kt  = ktVal  === '' ? 0 : parseFloat(ktVal);
+        let thi = thiVal === '' ? 0 : parseFloat(thiVal);
 
-        let cell = row.querySelector('.dtb');
-        if (cell) cell.innerText = dtb.toFixed(1);
+        let dtbCell = row.querySelector('.dtb');
+
+        if (txVal === '' && ktVal === '' && thiVal === '') {
+
+            dtbCell.innerText = '0.0';
+
+        } else {
+
+            let dtb = calcDTB(tx, kt, thi);
+            dtbCell.innerText = dtb.toFixed(1);
+
+        }
     });
 }
 

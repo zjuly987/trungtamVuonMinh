@@ -35,9 +35,15 @@
                 <?php foreach ($students as $i => $s): ?>
 
                     <?php
-                        $tx = $s['DTX'] ?? 0;
-                        $kt = $s['KT'] ?? 0;
-                        $thi = $s['Thi'] ?? 0;
+                        $tx = $s['DTX'];
+$kt = $s['KT'];
+$thi = $s['Thi'];
+
+$dtb = (
+    ($tx ?? 0)
+    + ($kt ?? 0) * 2
+    + ($thi ?? 0) * 3
+) / 6;
                         $dtb = ($tx + $kt*2 + $thi*3) / 6;
                     ?>
 
@@ -47,24 +53,33 @@
                         <td class="name-col"><?= $s['TenHocSinh'] ?></td>
 
                         <td>
-                            <input class="score-input tx"
-                                   data-original="<?= $tx ?>"
-                                   name="data[<?= $s['MaHocSinh'] ?>][DTX]"
-                                   value="<?= $tx ?>">
+                            <input
+                                class="score-input tx"
+                                data-original="<?= $tx ?? '' ?>"
+                                name="data[<?= $s['MaHocSinh'] ?>][DTX]"
+                                value="<?= $tx ?? '' ?>"
+                                <?= $tx === null ? 'readonly disabled' : '' ?>
+                            >
                         </td>
 
                         <td>
-                            <input class="score-input kt"
-                                   data-original="<?= $kt ?>"
-                                   name="data[<?= $s['MaHocSinh'] ?>][KT]"
-                                   value="<?= $kt ?>">
+                            <input
+                                class="score-input kt"
+                                data-original="<?= $kt ?? '' ?>"
+                                name="data[<?= $s['MaHocSinh'] ?>][KT]"
+                                value="<?= $kt ?? '' ?>"
+                                <?= $kt === null ? 'readonly disabled' : '' ?>
+                            >
                         </td>
 
                         <td>
-                            <input class="score-input thi"
-                                   data-original="<?= $thi ?>"
-                                   name="data[<?= $s['MaHocSinh'] ?>][Thi]"
-                                   value="<?= $thi ?>">
+                            <input
+                                class="score-input thi"
+                                data-original="<?= $thi ?? '' ?>"
+                                name="data[<?= $s['MaHocSinh'] ?>][Thi]"
+                                value="<?= $thi ?? '' ?>"
+                                <?= $thi === null ? 'readonly disabled' : '' ?>
+                            >
                         </td>
 
                         <td class="dtb"><?= number_format($dtb,1) ?></td>
@@ -103,23 +118,19 @@ function resetForm() {
 
     document.querySelectorAll('.score-input').forEach(input => {
 
-        let original = input.getAttribute('data-original');
+        input.value = input.dataset.original ?? '';
 
-        input.value = (original !== null && original !== '')
-            ? original
-            : 0;
     });
 
-    document.querySelectorAll('tr').forEach(row => {
+    document.querySelectorAll('tbody tr').forEach(row => {
 
-        let tx  = parseFloat(row.querySelector('.tx')?.value || 0);
-        let kt  = parseFloat(row.querySelector('.kt')?.value || 0);
-        let thi = parseFloat(row.querySelector('.thi')?.value || 0);
+        let tx  = parseFloat(row.querySelector('.tx')?.value) || 0;
+        let kt  = parseFloat(row.querySelector('.kt')?.value) || 0;
+        let thi = parseFloat(row.querySelector('.thi')?.value) || 0;
 
-        let dtb = (tx + kt*2 + thi*3) / 6;
+        let dtb = (tx + kt * 2 + thi * 3) / 6;
 
-        let cell = row.querySelector('.dtb');
-        if (cell) cell.innerText = dtb.toFixed(1);
+        row.querySelector('.dtb').innerText = dtb.toFixed(1);
     });
 }
 

@@ -49,15 +49,15 @@ class GradeController extends Controller
                 }
 
                 if (($d['DTX'] ?? 0) > 0) {
-                    $this->model->saveDiem($maHS, $maLop, 'TX', $d['DTX']);
+                    $this->model->insertDiem($maHS, $maLop, 'TX', $d['DTX']);
                 }
 
                 if (($d['KT'] ?? 0) > 0) {
-                    $this->model->saveDiem($maHS, $maLop, 'KT', $d['KT']);
+                    $this->model->insertDiem($maHS, $maLop, 'KT', $d['KT']);
                 }
 
                 if (($d['Thi'] ?? 0) > 0) {
-                    $this->model->saveDiem($maHS, $maLop, 'THI', $d['Thi']);
+                    $this->model->insertDiem($maHS, $maLop, 'THI', $d['Thi']);
                 }
             }
 
@@ -92,9 +92,9 @@ class GradeController extends Controller
 
             foreach ($_POST['data'] as $maHS => $d) {
 
-                $this->model->saveDiem($maHS, $maLop, 'TX', $d['DTX'] ?? 0);
-                $this->model->saveDiem($maHS, $maLop, 'KT', $d['KT'] ?? 0);
-                $this->model->saveDiem($maHS, $maLop, 'THI', $d['Thi'] ?? 0);
+                $this->model->updateDiem($maHS, $maLop, 'TX', $d['DTX'] ?? 0);
+                $this->model->updateDiem($maHS, $maLop, 'KT', $d['KT'] ?? 0);
+                $this->model->updateDiem($maHS, $maLop, 'THI', $d['Thi'] ?? 0);
             }
 
             header("Location:?url=grade/edit&malop=$maLop");

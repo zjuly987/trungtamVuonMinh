@@ -634,3 +634,8 @@ cursor:pointer;
     font-weight:600;
     cursor:not-allowed;
 }
+
+.score-input:disabled{
+    background:#f3f4f6;
+    cursor:not-allowed;
+}
