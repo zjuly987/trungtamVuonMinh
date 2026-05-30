@@ -31,11 +31,14 @@ class StudentController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $data = [
-                'TenHocSinh'  => trim($_POST['TenHocSinh']),
-                'NgaySinh'    => trim($_POST['NgaySinh']),
-                'DiaChi'      => trim($_POST['DiaChi']),
-                'SoDienThoai' => trim($_POST['SoDienThoai']),
-            ];
+    'TenHocSinh'  => trim($_POST['TenHocSinh']),
+    'NgaySinh'    => trim($_POST['NgaySinh']),
+    'DiaChi'      => trim($_POST['DiaChi']),
+    'SoDienThoai' => trim($_POST['SoDienThoai']),
+    'CCCD'        => trim($_POST['CCCD'] ?? ''),
+    'Truong'      => trim($_POST['Truong'] ?? ''),
+    'LopTruong'   => trim($_POST['LopTruong'] ?? ''),
+];
 
             // ===== VALIDATE =====
 
@@ -111,11 +114,14 @@ if (empty($errors)) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $data = [
-                'TenHocSinh'  => trim($_POST['TenHocSinh']),
-                'NgaySinh'    => trim($_POST['NgaySinh']),
-                'DiaChi'      => trim($_POST['DiaChi']),
-                'SoDienThoai' => trim($_POST['SoDienThoai']),
-            ];
+    'TenHocSinh'  => trim($_POST['TenHocSinh']),
+    'NgaySinh'    => trim($_POST['NgaySinh']),
+    'DiaChi'      => trim($_POST['DiaChi']),
+    'SoDienThoai' => trim($_POST['SoDienThoai']),
+    'CCCD'        => trim($_POST['CCCD'] ?? ''),
+    'Truong'      => trim($_POST['Truong'] ?? ''),
+    'LopTruong'   => trim($_POST['LopTruong'] ?? ''),
+];
 
             // ===== VALIDATE =====
 
@@ -170,16 +176,27 @@ if (empty($errors)) {
 
   public function delete()
 {
-    if ($_SERVER["REQUEST_METHOD"] === "POST" && !empty($_POST["MaLop"])) {
-        if ($this->lopHocModel->isActive($_POST["MaLop"])) {
-            header("Location: ?url=class&error=active");
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $id = $_POST["id"] ?? null;
+
+        if (!$id) {
+            header("Location: ?url=student");
             exit;
         }
-        $this->lopHocModel->delete($_POST["MaLop"]);
-        header("Location: ?url=class&success=deleted");
-        exit;
+
+        // Kiểm tra học sinh có đang trong lớp không
+        if ($this->model->isStudentInClass($id)) {
+            echo "<script>
+                alert('Không thể xóa! Học sinh này đang có trong lớp học. Vui lòng xóa khỏi lớp trước.');
+                window.history.back();
+            </script>";
+            exit;
+        }
+
+        $this->model->delete($id);
     }
-    header("Location: ?url=class");
+
+    header("Location: ?url=student");
     exit;
 }
 }
