@@ -13,46 +13,6 @@
         Quản lý giáo viên
 
     </div>
-    <?php if(
-    isset($_GET['error'])
-    &&
-    $_GET['error']=='foreign'
-    ): ?>
-
-    <div id="teacher-modal">
-
-    <div class="teacher-popup">
-
-    <div class="popup-icon">
-
-    <i class="bi bi-exclamation-triangle-fill"></i>
-
-    </div>
-
-    <div class="popup-title">
-
-    Giáo viên vẫn còn tồn tại trong lớp
-
-    </div>
-
-    <button
-    onclick="
-    document
-    .getElementById(
-    'teacher-modal'
-    )
-    .style.display='none'
-    ">
-
-    Đóng
-
-    </button>
-
-    </div>
-
-    </div>
-
-    <?php endif; ?>
 
     <!-- Toolbar -->
 
@@ -208,26 +168,6 @@
     </div>
 
 </div>
-<div id="teacher-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
-
-    <div class="teacher-popup">
-
-        <div class="popup-icon">
-            <i class="bi bi-exclamation-triangle-fill"></i>
-        </div>
-
-        <div class="popup-title">
-            Giáo viên vẫn còn tồn tại trong lớp
-        </div>
-
-        <button onclick="closeModal()">
-            Đóng
-        </button>
-
-    </div>
-
-</div>
 <script>
 function checkDelete(event, id){
     event.preventDefault();
@@ -245,7 +185,7 @@ function checkDelete(event, id){
             }
 
             if(data.inClass === true){
-                document.getElementById('teacher-modal').style.display = 'flex';
+                alert("Giáo viên vẫn còn tồn tại trong lớp");
                 return;
             }
 
@@ -253,9 +193,5 @@ function checkDelete(event, id){
                 window.location.href = "?url=teacher/delete&id=" + id;
             }
         });
-}
-
-function closeModal(){
-    document.getElementById('teacher-modal').style.display = 'none';
 }
 </script>
