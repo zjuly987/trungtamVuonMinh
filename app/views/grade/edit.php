@@ -98,7 +98,6 @@
 
     </form>
 </div>
-
 <script>
 function resetForm() {
 
@@ -123,24 +122,65 @@ function resetForm() {
         if (cell) cell.innerText = dtb.toFixed(1);
     });
 }
+
 function calcDTB(tx, kt, thi){
     return ((tx*1) + (kt*2) + (thi*3)) / 6;
 }
 
+// ===== VALIDATION 0 - 10 =====
+function validateScore(value) {
+
+    if (value === '' || value === null) return true;
+
+    let num = parseFloat(value);
+
+    if (isNaN(num)) {
+        alert("Điểm phải là số hợp lệ!");
+        return false;
+    }
+
+    if (num < 0 || num > 10) {
+        alert("Điểm phải nằm trong khoảng từ 0 đến 10!");
+        return false;
+    }
+
+    return true;
+}
+
+// ===== INPUT EVENT =====
 document.querySelectorAll('.score-input').forEach(input => {
+
     input.addEventListener('input', function(){
+
+        let value = this.value;
+
+        // CHECK VALIDATION NGAY KHI NHẬP
+        if (!validateScore(value)) {
+            this.value = '';
+            return;
+        }
 
         let row = this.closest('tr');
 
-        let tx  = parseFloat(row.querySelector('.tx').value) || 0;
-        let kt  = parseFloat(row.querySelector('.kt').value) || 0;
-        let thi = parseFloat(row.querySelector('.thi').value) || 0;
+        let txVal  = row.querySelector('.tx').value;
+        let ktVal  = row.querySelector('.kt').value;
+        let thiVal = row.querySelector('.thi').value;
+
+        let tx  = txVal !== '' ? parseFloat(txVal) : 0;
+        let kt  = ktVal !== '' ? parseFloat(ktVal) : 0;
+        let thi = thiVal !== '' ? parseFloat(thiVal) : 0;
 
         let dtb = calcDTB(tx, kt, thi);
 
         let dtbCell = row.querySelector('.dtb');
-        dtbCell.innerText = dtb.toFixed(1);
+
+        if (txVal === '' && ktVal === '' && thiVal === '') {
+            dtbCell.innerText = '';
+        } else {
+            dtbCell.innerText = dtb.toFixed(1);
+        }
 
     });
+
 });
 </script>
