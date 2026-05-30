@@ -139,7 +139,7 @@ class AttendanceController extends Controller {
                 $this->diemDanhModel->updateTrangThai($maBuoi, $maHocSinh, $trangThai);
             }
 
-            header("Location: ?url=attendance&view_matrix=" . $maLop . "#matrix-section");
+            header("Location: ?url=attendance/detail&ma_lop=" . $maLop);
             exit();
         }
     }
