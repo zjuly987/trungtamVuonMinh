@@ -179,7 +179,7 @@ function validateScore(value) {
     let num = parseFloat(value);
 
     if (isNaN(num)) {
-        alert("Điểm phải là số hợp lệ!");
+        alert("Điểm phải là số hợp lệ nằm trong khoảng từ 0 đến 10!");
         return false;
     }
 

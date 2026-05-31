@@ -11,6 +11,26 @@
         Sửa điểm
     </div>
 
+    <!-- CHỌN LỚP -->
+    <div class="teacher-toolbar">
+
+        <form method="GET" style="display:contents;">
+            <input type="hidden" name="url" value="grade/create">
+
+            <select name="malop" class="form-control" onchange="this.form.submit()">
+                <option value="">-- Chọn lớp --</option>
+                <?php foreach ($classes as $c): ?>
+                    <option value="<?= $c['MaLop'] ?>"
+                        <?= ($maLop ?? '') == $c['MaLop'] ? 'selected' : '' ?>>
+                        <?= $c['TenLop'] ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+        </form>
+
+    </div>
+
     <!-- TABLE -->
     <form method="POST">
 
@@ -141,7 +161,7 @@ function validateScore(value) {
     let num = parseFloat(value);
 
     if (isNaN(num)) {
-        alert("Điểm phải là số hợp lệ!");
+        alert("Điểm phải là số hợp lệ nằm trong khoảng từ 0 đến 10!");
         return false;
     }
 
