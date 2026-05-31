@@ -11,11 +11,11 @@ class DiemHocTap extends Model
                 l.TenLop,
                 GROUP_CONCAT(
                     CONCAT(lh.Thu, ' - ', lh.Ca)
-                    SEPARATOR ', '
+                    SEPARATOR ' | '
                 ) AS LichHoc,
                 GROUP_CONCAT(
                     DISTINCT p.TenPhong
-                    SEPARATOR ', '
+                    SEPARATOR ' | '
                 ) AS PhongHoc
             FROM lop_hoc l
             JOIN giao_vien gv
