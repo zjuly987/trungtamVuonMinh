@@ -28,6 +28,12 @@ class ClassController extends Controller
             $keyword = null;
         }
 
+        // Sync sĩ số cho tất cả lớp (để hiển thị đúng số học sinh hiện tại)
+        $allClasses = $this->lopHocModel->getAll();
+        foreach ($allClasses as $class) {
+            $this->lopHocModel->syncSiSo($class['MaLop']);
+        }
+
         $classes = $this->lopHocModel->getAll($keyword);
 
         $this->view("class/index", [
@@ -68,14 +74,15 @@ if ((int)$_POST["SoBuoi"] <= 0) {
     exit;
 }
 
-        $siSo = (int)$_POST["SiSo"];
+        // Lấy sĩ số tối đa từ form (trường SiSo là sĩ số tối đa)
+        $siSoToiDa = (int)$_POST["SiSo"];
 
         $students = $_POST["students"] ?? [];
 
         $soLuongHocSinh = count($students);
 
         // Validate sĩ số
-        if ($siSo <= 0) {
+        if ($siSoToiDa <= 0) {
 
             echo "
                 <script>
@@ -87,8 +94,8 @@ if ((int)$_POST["SoBuoi"] <= 0) {
             exit;
         }
 
-        // Validate vượt sĩ số
-        if ($soLuongHocSinh > $siSo) {
+        // Validate vượt sĩ số tối đa
+        if ($soLuongHocSinh > $siSoToiDa) {
 
             echo "
                 <script>
@@ -112,52 +119,8 @@ if ((int)$_POST["SoBuoi"] <= 0) {
 
             exit;
         }
-// ================= VALIDATE =================
 
-$siSo = (int)$_POST["SiSo"];
-
-$students = $_POST["students"] ?? [];
-
-$soLuongHocSinh = count($students);
-
-// Validate sĩ số
-if ($siSo <= 0) {
-
-    echo "
-        <script>
-            alert('Sĩ số lớp phải lớn hơn 0!');
-            window.history.back();
-        </script>
-    ";
-
-    exit;
-}
-
-// Validate vượt sĩ số
-if ($soLuongHocSinh > $siSo) {
-
-    echo "
-        <script>
-            alert('Số lượng học sinh vượt quá sĩ số lớp!');
-            window.history.back();
-        </script>
-    ";
-
-    exit;
-}
-
-// Validate chưa chọn học sinh
-if (empty($students)) {
-
-    echo "
-        <script>
-            alert('Vui lòng chọn học sinh!');
-            window.history.back();
-        </script>
-    ";
-
-    exit;
-}
+// ================= VALIDATE TRÙNG LỊCH =================
 
 // Validate giáo viên trùng lịch
 $maGiaoVien = $_POST["MaGiaoVien"] ?? null;
@@ -216,6 +179,7 @@ if (!empty($_POST["Thu"])) {
         }
     }
 }
+
 // Validate học sinh trùng lịch
 if (!empty($_POST["students"]) && !empty($_POST["Thu"])) {
 
@@ -245,11 +209,15 @@ if (!empty($_POST["students"]) && !empty($_POST["Thu"])) {
         }
     }
 }
+
         // Tạo lớp
         $maLop = $this->lopHocModel->create($_POST);
 
         // Thêm học sinh
         $this->lopHocModel->addStudents($maLop, $students);
+
+        // Sync sĩ số (cập nhật SiSo = số học sinh thực tế)
+        $this->lopHocModel->syncSiSo($maLop);
 
         // Tạo lịch học
         if (!empty($_POST["Thu"])) {
@@ -310,8 +278,10 @@ if (!empty($_POST["students"]) && !empty($_POST["Thu"])) {
 
     $studentsAdd = count($_POST["MaHocSinh"]);
 
-    // Validate vượt sĩ số
-if (($studentsCurrent + $studentsAdd) > 20) {
+    $siSoToiDa = $class['SiSoToiDa'] ?? 20;
+
+    // Validate vượt sĩ số tối đa
+if (($studentsCurrent + $studentsAdd) > $siSoToiDa) {
         echo "
             <script>
                 alert('Vượt quá sĩ số tối đa của lớp!');
@@ -360,7 +330,7 @@ if (($studentsCurrent + $studentsAdd) > 20) {
 // Validate học sinh trùng lịch khi sửa lớp
 $currentStudents = $this->lopHocModel->getStudents($id);
 
-if (!empty($_POST["Thu"])) {
+if (!empty($_POST["Thu"]) && isset($_POST["action"]) && $_POST["action"] === "updateClass") {
 
     foreach ($currentStudents as $student) {
 
@@ -379,7 +349,7 @@ if (!empty($_POST["Thu"])) {
 
                 echo "
                     <script>
-                        alert('Có học sinh trong lớp bị trùng lịch học!');
+                        alert('Có học sinh trong lớp bị trùng lịch học! Không thể cập nhật lịch!');
                         window.history.back();
                     </script>
                 ";
@@ -389,6 +359,7 @@ if (!empty($_POST["Thu"])) {
         }
     }
 }
+
             // Cập nhật thông tin chung của lớp
            if ($_POST["action"] === "updateClass") {
 

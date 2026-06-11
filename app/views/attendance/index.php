@@ -75,7 +75,8 @@ function singleMapClassCode($id, $name) {
               <td><?= htmlspecialchars($lop['LichHoc']) ?></td>
               <td><?= htmlspecialchars($lop['PhongHoc']) ?></td>
               <td class="text-center">
-                <a href="?url=attendance/detail&ma_lop=<?= $lop['MaLop'] ?>" class="btn-action-view">
+                <a href="?url=attendance/detail&ma_lop=<?= $lop['MaLop'] ?>" style="color: #1A365D; font-weight:600; text-decoration:none;">
+                  <i class="bi bi-calendar-check"></i>
                   Tra cứu điểm danh
                 </a>
               </td>

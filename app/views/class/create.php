@@ -1,17 +1,16 @@
 <!-- app/views/class/create.php -->
 <!-- Biến từ controller: $students (tất cả HS), $teachers (tất cả GV) -->
+<link rel="stylesheet" href="public/css/class.css">
 
 <div class="container-fluid mt-3 pe-4">
 
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-3" style="font-size:0.9rem;">
-            <li class="breadcrumb-item fw-bold">Trang chủ</li>
-            <li class="breadcrumb-item text-muted">
-                <a href="/trungtamVuonMinh/class" class="text-decoration-none text-muted">Quản lý lớp học</a>
-            </li>
-            <li class="breadcrumb-item active text-muted fst-italic">Tạo lớp mới</li>
-        </ol>
-    </nav>
+    <div class="student-breadcrumb">
+        <a href="?url=dashboard/teacher">Trang chủ</a>
+        <span>›</span>
+        <a href="?url=class">Quản lý lớp học</a>
+        <span>›</span>
+        Tạo lớp học mới
+    </div>
 
     <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
 
@@ -187,16 +186,26 @@
             <!-- Nút hành động -->
             <div class="form-actions mt-4" style="display: flex; justify-content: space-between; align-items: center;">
                 
-                <a href="?url=class" class="btn-action-view" style="padding: 8px 18px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+                <a href="?url=class" class="btn-back">
                     <i class="bi bi-arrow-left"></i> Quay lại danh sách
                 </a>
 
                 <div class="action-right" style="display: flex; gap: 12px;">
-                    <a href="?url=class" class="btn-cancel" style="padding: 8px 18px; border: none; border-radius: 18px; background: #f3f4f6; color: #374151; font-size: 13px; text-decoration: none; display: inline-block;">
+                    <a href="?url=class" class="btn-cancel" style="padding:8px 18px; border-radius:18px; background:#f3f4f6; text-decoration:none; color:#374151;">
                         Hủy bỏ
                     </a>
                     
-                    <button type="submit" class="btn-save" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border: none; border-radius: 18px; background: #10b981; color: white; font-size: 13px; cursor: pointer; transition: 0.2s;">
+                    <button type="submit" class="btn-save" style="padding:8px 18px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#10b981;
+
+    color:white;
+
+    cursor:pointer;">
                         <i class="bi bi-plus-circle"></i> Tạo lớp học
                     </button>
                 </div>

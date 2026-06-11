@@ -1,6 +1,7 @@
 <!-- app/views/class/detail.php -->
 <!-- Biến từ controller: $class, $students, $allStudents, $teachers, $rooms, $schedules -->
 <!-- $schedules: array of ['Thu'=>..., 'Ca'=>..., 'MaPhong'=>...] cho lớp này -->
+<link rel="stylesheet" href="public/css/class.css">
 
 <?php if (($_GET['error'] ?? '') === 'full'): ?>
     <div class="alert alert-danger">Lớp học đã đạt sĩ số tối đa. Không thể thêm học sinh mới!</div>
@@ -12,15 +13,13 @@
 
 <div class="container-fluid mt-3 pe-4">
 
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-3" style="font-size:0.9rem;">
-            <li class="breadcrumb-item fw-bold">Trang chủ</li>
-            <li class="breadcrumb-item text-muted">
-                <a href="?url=class" class="text-decoration-none text-muted">Quản lý lớp học</a>
-            </li>
-            <li class="breadcrumb-item active text-muted fst-italic">Cập nhật thông tin lớp</li>
-        </ol>
-    </nav>
+    <div class="student-breadcrumb">
+        <a href="?url=dashboard/teacher">Trang chủ</a>
+        <span>›</span>
+        <a href="?url=class">Quản lý lớp học</a>
+        <span>›</span>
+        Cập nhật thông tin lớp
+    </div>
 
     <!-- Thông tin chung (có thể sửa) -->
     <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
@@ -56,12 +55,12 @@
                     <label class="form-label fw-semibold text-muted" style="font-size:0.88rem;">
                         Sĩ số tối đa <span class="text-danger">*</span>
                         <span class="fw-normal text-muted" style="font-size:0.80rem;">
-                            (hiện: <strong><?= $class['SiSo'] ?></strong> học sinh)
+                            (hiện: <strong><?= count($students) ?></strong> học sinh)
                         </span>
                     </label>
                     <input type="number" name="SiSoToiDa" min="1"
                            class="form-control rounded-pill text-center"
-                           value="<?= $class['SiSoToiDa'] ?? $class['SiSo'] ?>"
+                           value="<?= $class['SiSoToiDa'] ?? 20 ?>"
                            required>
                 </div>
             </div>
@@ -174,8 +173,7 @@
 
             <!-- Nút lưu -->
            <div class="d-flex justify-content-end">
-    <button type="submit" class="btn text-white rounded-pill px-4 shadow-sm"
-            style="background-color:#10B981; border: none; font-size: 0.88rem;">
+    <button type="submit" class="btn-save">
         💾 Lưu thay đổi
     </button>
 </div>
@@ -250,9 +248,8 @@
     <!-- Điều hướng chân trang (Quay lại & Xóa lớp) -->
 <div class="d-flex justify-content-between align-items-center">
     <!-- Nút quay lại mới -->
-    <a href="?url=class" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm" 
-       style="font-size: 0.85rem; border: 1px solid #cbd5e1; color: #475569; background-color: #ffffff;">
-        <i class="bi bi-arrow-left me-2"></i> Quay lại
+    <a href="?url=class" class="btn-back">
+        <i class="bi bi-arrow-left"></i> Quay lại
     </a>
     
     <form action="?url=class/delete" method="POST"
