@@ -173,8 +173,7 @@
 
             <!-- Nút lưu -->
            <div class="d-flex justify-content-end">
-    <button type="submit" class="btn text-white rounded-pill px-4 shadow-sm"
-            style="background-color:#10B981; border: none; font-size: 0.88rem;">
+    <button type="submit" class="btn-save">
         💾 Lưu thay đổi
     </button>
 </div>
@@ -249,9 +248,8 @@
     <!-- Điều hướng chân trang (Quay lại & Xóa lớp) -->
 <div class="d-flex justify-content-between align-items-center">
     <!-- Nút quay lại mới -->
-    <a href="?url=class" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm" 
-       style="font-size: 0.85rem; border: 1px solid #cbd5e1; color: #475569; background-color: #ffffff;">
-        <i class="bi bi-arrow-left me-2"></i> Quay lại
+    <a href="?url=class" class="btn-back">
+        <i class="bi bi-arrow-left"></i> Quay lại
     </a>
     
     <form action="?url=class/delete" method="POST"

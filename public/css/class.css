@@ -149,3 +149,33 @@
     padding: 40px 0;
     font-style: italic;
 }
+
+.btn-back{
+
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 18px;
+    border:2px solid #2196f3;
+    border-radius:4px;
+    text-decoration:none;
+    color:#374151;
+    transition:.2s;
+}
+
+.btn-back:hover{
+    background:#eff6ff;
+}
+
+.btn-save{
+    padding:8px 18px;
+    border:none;
+    border-radius:18px;
+    background:#10b981;
+    color:white;
+    cursor:pointer;
+}
+
+.btn-save:hover{
+    background:#059669;
+}
