@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/trungtamVuonMinh/public/css/grade.css">
+<link rel="stylesheet" href="public/css/grade.css">
 
 <div class="teacher-content">
 
