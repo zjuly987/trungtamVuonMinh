@@ -80,13 +80,19 @@
                             <?= htmlspecialchars($s['TenHocSinh']) ?>
                         </td>
 
-                        <td><?= $tx ?></td>
+                        <td class="<?= !empty($s['TX_DaSua']) ? 'edited-score' : '' ?>">
+                            <?= $tx ?>
+                        </td>
 
-                        <td><?= $kt ?></td>
+                        <td class="<?= !empty($s['KT_DaSua']) ? 'edited-score' : '' ?>">
+                            <?= $kt ?>
+                        </td>
 
-                        <td><?= $thi ?></td>
+                        <td class="<?= !empty($s['THI_DaSua']) ? 'edited-score' : '' ?>">
+                            <?= $thi ?>
+                        </td>
 
-                        <td>
+                        <td class="<?= !empty($s['DTB_DaSua']) ? 'edited-score' : '' ?>">
                             <strong>
                                 <?= number_format($dtb, 1) ?>
                             </strong>

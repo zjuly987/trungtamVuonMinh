@@ -33,7 +33,21 @@
 
     <!-- TABLE -->
     <form method="POST">
-
+    <div class="score-hint">
+        * Nhập điểm từ 0 đến 10. Làm tròn đến số thập phân thứ nhất. Ví dụ: 8.5
+        <p> * Công thức tính điểm trung bình: ĐTB = (ĐTX x 1 + KT x 2 + Thi x 3) / 6</p>
+    </div>
+    <div class="table-actions">
+        <label class="btn-excel">
+            📊 Tải file Excel
+            <input
+                type="file"
+                accept=".xlsx,.xls"
+                id="excelFile"
+                hidden
+            >
+        </label>
+    </div>
         <div class="teacher-table-wrap">
 
             <table class="teacher-table grade-table">
@@ -42,14 +56,24 @@
                         <th>STT</th>
                         <th>Mã HS</th>
                         <th>Tên học sinh</th>
-                        <th>TX</th>
-                        <th>KT</th>
+                        <th>Thường xuyên</th>
+                        <th>Kiểm tra</th>
                         <th>Thi</th>
-                        <th>DTB</th>
+                        <th>ĐTB</th>
                     </tr>
                 </thead>
 
                 <tbody>
+
+                <tr class="guide-row">
+                    <td>*</td>
+                    <td>VD</td>
+                    <td>Học sinh mẫu</td>
+                    <td>8.5</td>
+                    <td>7.0</td>
+                    <td>9.0</td>
+                    <td>8.3</td>
+                </tr>
 
                 <?php foreach ($students as $i => $s): ?>
 
@@ -71,7 +95,6 @@
                                 data-original="<?= $tx ?? '' ?>"
                                 name="data[<?= $s['MaHocSinh'] ?>][DTX]"
                                 value="<?= $tx ?? '' ?>"
-                                <?= $tx !== null ? 'readonly' : '' ?>
                             >
                         </td>
 
@@ -81,7 +104,6 @@
                                 data-original="<?= $kt ?? '' ?>"
                                 name="data[<?= $s['MaHocSinh'] ?>][KT]"
                                 value="<?= $kt ?? '' ?>"
-                                <?= $kt !== null ? 'readonly' : '' ?>
                             >
                         </td>
 
@@ -91,7 +113,6 @@
                                 data-original="<?= $thi ?? '' ?>"
                                 name="data[<?= $s['MaHocSinh'] ?>][Thi]"
                                 value="<?= $thi ?? '' ?>"
-                                <?= $thi !== null ? 'readonly' : '' ?>
                             > 
                         </td>
 
@@ -174,7 +195,10 @@ function calcDTB(tx, kt, thi){
 
 // ===== VALIDATION 0 - 10 =====
 function validateScore(value) {
-    if (value === '' || value === null) return true; // cho phép để trống
+
+    if (value === '' || value === null) return true;
+
+    value = value.replace(',', '.');
 
     let num = parseFloat(value);
 
@@ -195,6 +219,8 @@ function validateScore(value) {
 document.querySelectorAll('.score-input').forEach(input => {
 
     input.addEventListener('input', function(){
+    
+        this.value = this.value.replace(',', '.');
 
         let value = this.value;
 

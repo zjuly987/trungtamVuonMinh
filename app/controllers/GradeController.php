@@ -28,7 +28,7 @@ class GradeController extends Controller
         ]);
     }
 
-    // NHẬP ĐIỂM (CREATE - chỉ thêm, không sửa)
+    // NHẬP ĐIỂM (THÊM + SỬA TRỰC TIẾP)
     public function create()
     {
         $maTaiKhoan = $_SESSION['user']['MaTaiKhoan'];
@@ -41,23 +41,31 @@ class GradeController extends Controller
 
             foreach ($_POST['data'] as $maHS => $d) {
 
-                // CHỈ INSERT (KHÔNG UPDATE)
-                if (($d['DTX'] ?? '') === '' &&
-                    ($d['KT'] ?? '') === '' &&
-                    ($d['Thi'] ?? '') === '') {
-                    continue;
+                if (($d['DTX'] ?? '') !== '') {
+                    $this->model->saveDiem(
+                        $maHS,
+                        $maLop,
+                        'TX',
+                        $d['DTX']
+                    );
                 }
 
-                if (($d['DTX'] ?? 0) > 0) {
-                    $this->model->insertDiem($maHS, $maLop, 'TX', $d['DTX']);
+                if (($d['KT'] ?? '') !== '') {
+                    $this->model->saveDiem(
+                        $maHS,
+                        $maLop,
+                        'KT',
+                        $d['KT']
+                    );
                 }
 
-                if (($d['KT'] ?? 0) > 0) {
-                    $this->model->insertDiem($maHS, $maLop, 'KT', $d['KT']);
-                }
-
-                if (($d['Thi'] ?? 0) > 0) {
-                    $this->model->insertDiem($maHS, $maLop, 'THI', $d['Thi']);
+                if (($d['Thi'] ?? '') !== '') {
+                    $this->model->saveDiem(
+                        $maHS,
+                        $maLop,
+                        'THI',
+                        $d['Thi']
+                    );
                 }
             }
 

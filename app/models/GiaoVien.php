@@ -26,10 +26,61 @@ class GiaoVien extends Model {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function create($data) {
-
+    public function create($data)
+    {
         try {
-            $stmt = $this->db->prepare("
+
+            // Bắt đầu transaction
+            $this->db->beginTransaction();
+
+            // Lấy username giáo viên cuối cùng
+            $stmt = $this->db->query("
+                SELECT TenDangNhap
+                FROM tai_khoan
+                WHERE VaiTro = 'Giáo viên'
+                ORDER BY MaTaiKhoan DESC
+                LIMIT 1
+            ");
+
+            $lastAccount = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($lastAccount) {
+
+                preg_match('/(\d+)$/', $lastAccount['TenDangNhap'], $match);
+
+                $nextNumber = intval($match[1]) + 1;
+
+            } else {
+
+                $nextNumber = 1;
+            }
+
+            $username = 'gv' . str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
+
+            // Tạo tài khoản
+            $stmtTK = $this->db->prepare("
+                INSERT INTO tai_khoan
+                (
+                    TenDangNhap,
+                    MatKhau,
+                    VaiTro,
+                    TrangThai
+                )
+                VALUES (?, ?, ?, ?)
+            ");
+
+            $stmtTK->execute([
+                $username,
+                '123456',
+                'Giáo viên',
+                1
+            ]);
+
+            // Lấy MaTaiKhoan vừa tạo
+            $maTaiKhoan = $this->db->lastInsertId();
+
+            // Thêm giáo viên
+            $stmtGV = $this->db->prepare("
                 INSERT INTO giao_vien
                 (
                     TenGiaoVien,
@@ -44,7 +95,7 @@ class GiaoVien extends Model {
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
-            return $stmt->execute([
+            $stmtGV->execute([
                 $data['TenGiaoVien'],
                 $data['GioiTinh'],
                 $data['SoDienThoai'],
@@ -52,10 +103,17 @@ class GiaoVien extends Model {
                 $data['TruongDangGiangDay'],
                 $data['DiaChi'],
                 $data['ChuyenMon'],
-                $data['MaTaiKhoan']
+                $maTaiKhoan
             ]);
 
+            $this->db->commit();
+
+            return true;
+
         } catch (PDOException $e) {
+
+            $this->db->rollBack();
+
             return "duplicate";
         }
     }
@@ -104,11 +162,47 @@ class GiaoVien extends Model {
     public function delete($id)
     {
         $stmt = $this->db->prepare("
-            DELETE FROM giao_vien
+            SELECT MaTaiKhoan
+            FROM giao_vien
             WHERE MaGiaoVien = ?
         ");
 
-        return $stmt->execute([$id]);
+        $stmt->execute([$id]);
+
+        $teacher = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if(!$teacher){
+            return false;
+        }
+
+        $this->db->beginTransaction();
+
+        try {
+
+            $stmt = $this->db->prepare("
+                DELETE FROM giao_vien
+                WHERE MaGiaoVien = ?
+            ");
+
+            $stmt->execute([$id]);
+
+            $stmt = $this->db->prepare("
+                DELETE FROM tai_khoan
+                WHERE MaTaiKhoan = ?
+            ");
+
+            $stmt->execute([$teacher['MaTaiKhoan']]);
+
+            $this->db->commit();
+
+            return true;
+
+        } catch(Exception $e){
+
+            $this->db->rollBack();
+
+            return false;
+        }
     }
 
     public function search($keyword) {

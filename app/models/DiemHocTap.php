@@ -39,13 +39,27 @@ class DiemHocTap extends Model
     public function getHocSinhByLop($maLop)
     {
         $sql = "
-            SELECT 
+            SELECT
                 hs.MaHocSinh,
                 hs.TenHocSinh,
 
-                MAX(CASE WHEN d.LanKiemTra='TX' THEN d.Diem END) AS DTX,
-                MAX(CASE WHEN d.LanKiemTra='KT' THEN d.Diem END) AS KT,
-                MAX(CASE WHEN d.LanKiemTra='THI' THEN d.Diem END) AS Thi
+                MAX(CASE WHEN d.LanKiemTra='TX'
+                    THEN d.Diem END) AS DTX,
+
+                MAX(CASE WHEN d.LanKiemTra='KT'
+                    THEN d.Diem END) AS KT,
+
+                MAX(CASE WHEN d.LanKiemTra='THI'
+                    THEN d.Diem END) AS Thi,
+
+                MAX(CASE WHEN d.LanKiemTra='TX'
+                    THEN d.DaSua END) AS TX_DaSua,
+
+                MAX(CASE WHEN d.LanKiemTra='KT'
+                    THEN d.DaSua END) AS KT_DaSua,
+
+                MAX(CASE WHEN d.LanKiemTra='THI'
+                    THEN d.DaSua END) AS THI_DaSua
 
             FROM chi_tiet_lop ctl
 
@@ -54,6 +68,7 @@ class DiemHocTap extends Model
 
             LEFT JOIN diem_hoc_tap d
                 ON d.MaHocSinh = hs.MaHocSinh
+                AND d.MaLop = ctl.MaLop
 
             WHERE ctl.MaLop = ?
 
@@ -66,40 +81,39 @@ class DiemHocTap extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // public function saveDiem($maHS, $maLop, $loai, $diem)
-    // {
-    //     $sql = "
-    //         INSERT INTO diem_hoc_tap (MaHocSinh, MaLop, LanKiemTra, Diem)
-    //         VALUES (?, ?, ?, ?)
-    //         ON DUPLICATE KEY UPDATE Diem = VALUES(Diem)
-    //     ";
-
-    //     $stmt = $this->db->prepare($sql);
-    //     return $stmt->execute([$maHS, $maLop, $loai, $diem]);
-    // }
-
-    public function insertDiem($maHS, $maLop, $loai, $diem)
+    public function saveDiem($maHS, $maLop, $loai, $diem)
     {
         $sql = "
             INSERT INTO diem_hoc_tap
-            (MaHocSinh, MaLop, LanKiemTra, Diem)
+            (
+                MaHocSinh,
+                MaLop,
+                LanKiemTra,
+                Diem
+            )
             VALUES (?, ?, ?, ?)
+
+            ON DUPLICATE KEY UPDATE
+            Diem = VALUES(Diem)
         ";
 
         $stmt = $this->db->prepare($sql);
 
-        try {
-            return $stmt->execute([$maHS, $maLop, $loai, $diem]);
-        } catch (PDOException $e) {
-            return false;
-        }
+        return $stmt->execute([
+            $maHS,
+            $maLop,
+            $loai,
+            $diem
+        ]);
     }
     
     public function updateDiem($maHS, $maLop, $loai, $diem)
     {
         $sql = "
             UPDATE diem_hoc_tap
-            SET Diem = ?
+            SET
+                Diem = ?,
+                DaSua = 1
             WHERE MaHocSinh = ?
             AND MaLop = ?
             AND LanKiemTra = ?
