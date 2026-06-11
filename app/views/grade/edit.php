@@ -17,7 +17,7 @@
     </script>
     <?php unset($_SESSION['success']); ?>
     <?php endif; ?>
-    
+
     <!-- CHỌN LỚP -->
     <div class="teacher-toolbar">
 
@@ -99,6 +99,7 @@
                         <td>
                         <input
                             class="score-input tx <?= !empty($s['TX_DaSua']) ? 'edited-score' : '' ?>"
+                            style="<?= !empty($s['TX_DaSua']) ? 'color:red !important;' : '' ?>"
                             data-original="<?= $s['DTX'] ?? '' ?>"
                             name="data[<?= $s['MaHocSinh'] ?>][DTX]"
                             value="<?= $s['DTX'] ?? '' ?>"
@@ -109,6 +110,7 @@
                         <td>
                         <input
                             class="score-input kt <?= !empty($s['KT_DaSua']) ? 'edited-score' : '' ?>"
+                            style="<?= !empty($s['KT_DaSua']) ? 'color:red !important;' : '' ?>"
                             data-original="<?= $s['KT'] ?? '' ?>"
                             name="data[<?= $s['MaHocSinh'] ?>][KT]"
                             value="<?= $s['KT'] ?? '' ?>"
@@ -119,6 +121,7 @@
                         <td>
                         <input
                             class="score-input thi <?= !empty($s['THI_DaSua']) ? 'edited-score' : '' ?>"
+                            style="<?= !empty($s['THI_DaSua']) ? 'color:red !important;' : '' ?>"
                             data-original="<?= $s['Thi'] ?? '' ?>"
                             name="data[<?= $s['MaHocSinh'] ?>][Thi]"
                             value="<?= $s['Thi'] ?? '' ?>"

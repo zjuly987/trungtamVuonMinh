@@ -80,15 +80,15 @@
                             <?= htmlspecialchars($s['TenHocSinh']) ?>
                         </td>
 
-                        <td class="<?= !empty($s['TX_DaSua']) ? 'edited-score' : '' ?>">
+                        <td class="<?= !empty($s['TX_DaSua']) ? 'edited-score' : '' ?>" style="<?= !empty($s['TX_DaSua']) ? 'color:red !important;' : '' ?>">
                             <?= $tx ?>
                         </td>
 
-                        <td class="<?= !empty($s['KT_DaSua']) ? 'edited-score' : '' ?>">
+                        <td class="<?= !empty($s['KT_DaSua']) ? 'edited-score' : '' ?>" style="<?= !empty($s['KT_DaSua']) ? 'color:red !important;' : '' ?>">
                             <?= $kt ?>
                         </td>
 
-                        <td class="<?= !empty($s['THI_DaSua']) ? 'edited-score' : '' ?>">
+                        <td class="<?= !empty($s['THI_DaSua']) ? 'edited-score' : '' ?>" style="<?= !empty($s['THI_DaSua']) ? 'color:red !important;' : '' ?>">
                             <?= $thi ?>
                         </td>
 
