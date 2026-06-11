@@ -29,6 +29,11 @@ $controller = $parts[0] ?? '';
         Quản lý lớp học
     </a>
 
+    <a href=""
+       class="<?= $controller === "report" ? "active" : "" ?>">
+        Báo cáo
+    </a>
+
 <?php endif; ?>
 
 <?php if($role === "teacher"): ?>
@@ -46,6 +51,11 @@ $controller = $parts[0] ?? '';
     <a href="?url=grade"
     class="<?= $controller === "grade" ? "active" : "" ?>">
         Quản lý điểm
+    </a>
+
+    <a href=""
+       class="<?= $controller === "report" ? "active" : "" ?>">
+        Báo cáo
     </a>
 
 <?php endif; ?>

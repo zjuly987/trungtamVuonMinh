@@ -18,7 +18,7 @@
             border-radius: 16px;
             padding: 40px 36px;
             width: 100%;
-            max-width: 420px;
+            max-width: 500px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.08);
         }
         .login-title {
@@ -63,7 +63,7 @@
             <div class="mb-3">
                 <label class="form-label fw-semibold" style="font-size:0.88rem;">Tên đăng nhập</label>
                 <input type="text" name="TenDangNhap" class="form-control rounded-pill"
-                       placeholder="VD: vt001" required autofocus>
+                       placeholder="Nhập tên đăng nhập" required autofocus>
             </div>
             <div class="mb-4">
                 <label class="form-label fw-semibold" style="font-size:0.88rem;">Mật khẩu</label>
