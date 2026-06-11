@@ -10,7 +10,7 @@
         <span>›</span>
         Nhập điểm
     </div>
-    
+
     <?php if(isset($_SESSION['success'])): ?>
     <script>
     alert("<?= $_SESSION['success'] ?>");
@@ -40,10 +40,6 @@
 
     <!-- TABLE -->
     <form method="POST">
-    <div class="score-hint" style=" font-size:13.5px; color:#6b7280; margin-bottom:20px; font-style:italic;";>
-        * Nhập điểm từ 0 đến 10. Làm tròn đến số thập phân thứ nhất. Ví dụ: 8.5
-        <p> * Công thức tính điểm trung bình: ĐTB = (ĐTX x 1 + KT x 2 + Thi x 3) / 6</p>
-    </div>
     <div class="table-actions" style="display:flex; justify-content:flex-start; margin-bottom:12px;">
         <label class="btn-excel" style="padding:8px 18px; border:none; border-radius:18px; background:#10b981; color:#fff; cursor:pointer; font-size:13.5px; font-weight:600;">
             📊 Tải file Excel
@@ -55,7 +51,10 @@
             >
         </label>
     </div>
-    <br>
+        <div class="score-hint" style=" font-size:13.5px; color:#6b7280; margin-bottom:20px; font-style:italic;";>
+        * Nhập điểm từ 0 đến 10. Làm tròn đến số thập phân thứ nhất. Ví dụ: 8.5
+        <p> * Công thức tính điểm trung bình: ĐTB = (ĐTX x 1 + KT x 2 + Thi x 3) / 6</p>
+    </div>
         <div class="teacher-table-wrap">
 
             <table class="teacher-table grade-table">
