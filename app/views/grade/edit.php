@@ -10,7 +10,14 @@
         <span>›</span>
         Sửa điểm
     </div>
-
+    
+    <?php if(isset($_SESSION['success'])): ?>
+    <script>
+    alert("<?= $_SESSION['success'] ?>");
+    </script>
+    <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+    
     <!-- CHỌN LỚP -->
     <div class="teacher-toolbar">
 

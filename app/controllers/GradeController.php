@@ -68,7 +68,7 @@ class GradeController extends Controller
                     );
                 }
             }
-
+            $_SESSION['success'] = 'Nhập điểm thành công';
             header("Location:?url=grade/create&malop=$maLop");
             exit;
         }
@@ -104,7 +104,7 @@ class GradeController extends Controller
                 $this->model->updateDiem($maHS, $maLop, 'KT', $d['KT'] ?? 0);
                 $this->model->updateDiem($maHS, $maLop, 'THI', $d['Thi'] ?? 0);
             }
-
+            $_SESSION['success'] = 'Sửa điểm thành công';
             header("Location:?url=grade/edit&malop=$maLop");
             exit;
         }
