@@ -53,7 +53,7 @@ if ($_POST["NgayBatDau"] < date('Y-m-d')) {
 
     echo "
         <script>
-            alert('Ngày bắt đầu không hợp lệ!');
+            alert('Ngày bắt đầu không được là ngày trong quá khứ!');
             window.history.back();
         </script>
     ";
@@ -375,6 +375,19 @@ if (!empty($_POST["Thu"]) && isset($_POST["action"]) && $_POST["action"] === "up
 
             // Cập nhật thông tin chung của lớp
            if ($_POST["action"] === "updateClass") {
+
+    // Validate ngày bắt đầu
+    if ($_POST["NgayBatDau"] < date('Y-m-d')) {
+
+        echo "
+            <script>
+                alert('Ngày bắt đầu không được là ngày trong quá khứ!');
+                window.history.back();
+            </script>
+        ";
+
+        exit;
+    }
 
     $siSoToiDa = (int)$_POST["SiSoToiDa"];
 

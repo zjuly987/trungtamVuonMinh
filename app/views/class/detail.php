@@ -74,6 +74,7 @@
                     <input type="date" name="NgayBatDau"
                            class="form-control rounded-pill"
                            value="<?= $class['NgayBatDau'] ?>"
+                           min="<?= date('Y-m-d') ?>"
                            required>
                 </div>
                 <div class="col-md-8">

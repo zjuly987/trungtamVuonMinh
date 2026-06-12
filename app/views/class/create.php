@@ -56,7 +56,9 @@
                         Ngày bắt đầu <span class="text-danger">*</span>
                     </label>
                     <input type="date" name="NgayBatDau"
-                           class="form-control rounded-pill" required>
+                           class="form-control rounded-pill"
+                           min="<?= date('Y-m-d') ?>"
+                           required>
                 </div>
                 <div class="col-md-8">
                     <label class="form-label fw-semibold text-muted" style="font-size:0.88rem;">
