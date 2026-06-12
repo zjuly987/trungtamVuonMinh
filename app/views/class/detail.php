@@ -58,7 +58,7 @@
                             (hiện: <strong><?= count($students) ?></strong> học sinh)
                         </span>
                     </label>
-                    <input type="number" name="SiSoToiDa" min="1"
+                    <input type="number" name="SiSoToiDa" min="1" max="20"
                            class="form-control rounded-pill text-center"
                            value="<?= $class['SiSoToiDa'] ?? 20 ?>"
                            required>

@@ -43,7 +43,7 @@
                     <label class="form-label fw-semibold text-muted" style="font-size:0.88rem;">
                         Sĩ số tối đa <span class="text-danger">*</span>
                     </label>
-                    <input type="number" name="SiSo" min="1"
+                    <input type="number" name="SiSo" min="1" max="20"
                            class="form-control rounded-pill text-center"
                            placeholder="VD: 20" required>
                 </div>

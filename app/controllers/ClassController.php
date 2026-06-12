@@ -94,6 +94,19 @@ if ((int)$_POST["SoBuoi"] <= 0) {
             exit;
         }
 
+        // Validate sĩ số tối đa không quá 20
+        if ($siSoToiDa > 20) {
+
+            echo "
+                <script>
+                    alert('Sĩ số tối đa không được vượt quá 20 học sinh!');
+                    window.history.back();
+                </script>
+            ";
+
+            exit;
+        }
+
         // Validate vượt sĩ số tối đa
         if ($soLuongHocSinh > $siSoToiDa) {
 
@@ -373,6 +386,19 @@ if (!empty($_POST["Thu"]) && isset($_POST["action"]) && $_POST["action"] === "up
         echo "
             <script>
                 alert('Sĩ số lớp phải lớn hơn 0!');
+                window.history.back();
+            </script>
+        ";
+
+        exit;
+    }
+
+    // Validate sĩ số tối đa không quá 20
+    if ($siSoToiDa > 20) {
+
+        echo "
+            <script>
+                alert('Sĩ số tối đa không được vượt quá 20 học sinh!');
                 window.history.back();
             </script>
         ";
