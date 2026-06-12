@@ -66,17 +66,7 @@
                 <?php endif; ?>
             </div>
 
-            <!-- CCCD -->
-            <div class="form-group">
-                <label>CCCD</label>
-                <input type="text" name="CCCD"
-                    class="form-control <?= !empty($errors['CCCD']) ? 'is-invalid' : '' ?>"
-                    placeholder="Nhập số CCCD"
-                    value="<?= htmlspecialchars($_POST['CCCD'] ?? $student['CCCD'] ?? '') ?>">
-                <?php if (!empty($errors['CCCD'])): ?>
-                    <span class="error-msg">⚠ <?= $errors['CCCD'] ?></span>
-                <?php endif; ?>
-            </div>
+           
 
           
 
