@@ -10,10 +10,51 @@
         <span>›</span>
         Sửa điểm
     </div>
+    
+    <?php if(isset($_SESSION['success'])): ?>
+    <script>
+    alert("<?= $_SESSION['success'] ?>");
+    </script>
+    <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+
+    <!-- CHỌN LỚP -->
+    <div class="teacher-toolbar">
+
+        <form method="GET" style="display:contents;">
+            <input type="hidden" name="url" value="grade/create">
+
+            <select name="malop" class="form-control" onchange="this.form.submit()">
+                <option value="">-- Chọn lớp --</option>
+                <?php foreach ($classes as $c): ?>
+                    <option value="<?= $c['MaLop'] ?>"
+                        <?= ($maLop ?? '') == $c['MaLop'] ? 'selected' : '' ?>>
+                        <?= $c['TenLop'] ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+        </form>
+
+    </div>
 
     <!-- TABLE -->
     <form method="POST">
-
+    <div class="score-hint" style=" font-size:13.5px; color:#6b7280; margin-bottom:20px; font-style:italic;";>
+        * Nhập điểm từ 0 đến 10. Làm tròn đến số thập phân thứ nhất. Ví dụ: 8.5
+        <p> * Công thức tính điểm trung bình: ĐTB = (ĐTX x 1 + KT x 2 + Thi x 3) / 6</p>
+    </div>
+    <div class="table-actions" style="display:flex; justify-content:flex-start; margin-bottom:12px;">
+        <label class="btn-excel" style="padding:8px 18px; border:none; border-radius:18px; background:#10b981; color:#fff; cursor:pointer; font-size:13.5px; font-weight:600;">
+            📊 Tải file Excel
+            <input
+                type="file"
+                accept=".xlsx,.xls"
+                id="excelFile"
+                hidden
+            >
+        </label>
+    </div>
         <div class="teacher-table-wrap">
 
             <table class="teacher-table grade-table">
@@ -23,15 +64,23 @@
                         <th>STT</th>
                         <th>Mã HS</th>
                         <th>Tên học sinh</th>
-                        <th>TX</th>
-                        <th>KT</th>
+                        <th>Thường xuyên</th>
+                        <th>Kiểm tra</th>
                         <th>Thi</th>
-                        <th>DTB</th>
+                        <th>ĐTB</th>
                     </tr>
                 </thead>
 
                 <tbody>
-
+                <tr class="guide-row">
+                    <td>*</td>
+                    <td>VD</td>
+                    <td>Học sinh mẫu</td>
+                    <td>8.5</td>
+                    <td>7.0</td>
+                    <td>9.0</td>
+                    <td>8.3</td>
+                </tr>
                 <?php foreach ($students as $i => $s): ?>
 
                     <?php
@@ -48,33 +97,36 @@
                         <td class="name-col"><?= $s['TenHocSinh'] ?></td>
 
                         <td>
-                            <input
-                                class="score-input tx"
-                                data-original="<?= $tx ?? '' ?>"
-                                name="data[<?= $s['MaHocSinh'] ?>][DTX]"
-                                value="<?= $tx ?? '' ?>"
-                                <?= $tx === null ? 'readonly disabled' : '' ?>
-                            >
+                        <input
+                            class="score-input tx <?= !empty($s['TX_DaSua']) ? 'edited-score' : '' ?>"
+                            style="<?= !empty($s['TX_DaSua']) ? 'color:red !important;' : '' ?>"
+                            data-original="<?= $s['DTX'] ?? '' ?>"
+                            name="data[<?= $s['MaHocSinh'] ?>][DTX]"
+                            value="<?= $s['DTX'] ?? '' ?>"
+                            <?= ($s['DTX'] ?? null) === null ? 'readonly disabled' : '' ?>
+                        >
                         </td>
 
                         <td>
-                            <input
-                                class="score-input kt"
-                                data-original="<?= $kt ?? '' ?>"
-                                name="data[<?= $s['MaHocSinh'] ?>][KT]"
-                                value="<?= $kt ?? '' ?>"
-                                <?= $kt === null ? 'readonly disabled' : '' ?>
-                            >
+                        <input
+                            class="score-input kt <?= !empty($s['KT_DaSua']) ? 'edited-score' : '' ?>"
+                            style="<?= !empty($s['KT_DaSua']) ? 'color:red !important;' : '' ?>"
+                            data-original="<?= $s['KT'] ?? '' ?>"
+                            name="data[<?= $s['MaHocSinh'] ?>][KT]"
+                            value="<?= $s['KT'] ?? '' ?>"
+                            <?= ($s['KT'] ?? null) === null ? 'readonly disabled' : '' ?>
+                        >
                         </td>
 
                         <td>
-                            <input
-                                class="score-input thi"
-                                data-original="<?= $thi ?? '' ?>"
-                                name="data[<?= $s['MaHocSinh'] ?>][Thi]"
-                                value="<?= $thi ?? '' ?>"
-                                <?= $thi === null ? 'readonly disabled' : '' ?>
-                            >
+                        <input
+                            class="score-input thi <?= !empty($s['THI_DaSua']) ? 'edited-score' : '' ?>"
+                            style="<?= !empty($s['THI_DaSua']) ? 'color:red !important;' : '' ?>"
+                            data-original="<?= $s['Thi'] ?? '' ?>"
+                            name="data[<?= $s['MaHocSinh'] ?>][Thi]"
+                            value="<?= $s['Thi'] ?? '' ?>"
+                            <?= ($s['Thi'] ?? null) === null ? 'readonly disabled' : '' ?>
+                        >
                         </td>
 
                         <td class="dtb"><?= number_format($dtb,1) ?></td>
@@ -112,20 +164,21 @@
 function resetForm() {
 
     document.querySelectorAll('.score-input').forEach(input => {
-
-        input.value = input.dataset.original ?? '';
-
+        input.value = input.dataset.original || '';
     });
 
     document.querySelectorAll('tbody tr').forEach(row => {
 
-        let tx  = parseFloat(row.querySelector('.tx')?.value) || 0;
-        let kt  = parseFloat(row.querySelector('.kt')?.value) || 0;
-        let thi = parseFloat(row.querySelector('.thi')?.value) || 0;
+        let txVal  = row.querySelector('.tx')?.value || '';
+        let ktVal  = row.querySelector('.kt')?.value || '';
+        let thiVal = row.querySelector('.thi')?.value || '';
 
-        let dtb = (tx + kt * 2 + thi * 3) / 6;
+        let tx  = txVal === '' ? 0 : parseFloat(txVal);
+        let kt  = ktVal === '' ? 0 : parseFloat(ktVal);
+        let thi = thiVal === '' ? 0 : parseFloat(thiVal);
 
-        row.querySelector('.dtb').innerText = dtb.toFixed(1);
+        row.querySelector('.dtb').innerText =
+            calcDTB(tx, kt, thi).toFixed(1);
     });
 }
 
@@ -138,10 +191,12 @@ function validateScore(value) {
 
     if (value === '' || value === null) return true;
 
+    value = value.replace(',', '.');
+
     let num = parseFloat(value);
 
     if (isNaN(num)) {
-        alert("Điểm phải là số hợp lệ!");
+        alert("Điểm phải là số hợp lệ nằm trong khoảng từ 0 đến 10!");
         return false;
     }
 
@@ -157,6 +212,8 @@ function validateScore(value) {
 document.querySelectorAll('.score-input').forEach(input => {
 
     input.addEventListener('input', function(){
+        
+        this.value = this.value.replace(',', '.');
 
         let value = this.value;
 

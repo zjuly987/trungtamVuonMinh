@@ -639,3 +639,50 @@ cursor:pointer;
     background:#f3f4f6;
     cursor:not-allowed;
 }
+
+.edited-score{
+    background-color: #ffe5e5 !important;
+    border: 2px solid red !important;
+    color: red !important;
+    font-weight: bold !important;
+}
+.score-hint{
+    font-size:10px;
+    color:#6b7280;
+    margin-bottom:20px;
+    font-style:italic;
+}
+.guide-row{
+    background:#f9fafb !important;
+}
+
+.guide-row td{
+    color:#9ca3af !important;
+    font-style:italic;
+    text-align:center;
+}
+
+.guide-row td:nth-child(3){
+    text-align:left !important;
+}
+
+.table-actions{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:12px;
+}
+
+.btn-excel{
+    padding:8px 18px;
+    border:none;
+    border-radius:18px;
+    background:#217346;
+    color:#fff;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:600;
+}
+
+.btn-excel:hover{
+    background:#1b5e37;
+}

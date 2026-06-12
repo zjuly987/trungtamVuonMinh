@@ -10,6 +10,13 @@
         <span>›</span>
         Nhập điểm
     </div>
+    
+    <?php if(isset($_SESSION['success'])): ?>
+    <script>
+    alert("<?= $_SESSION['success'] ?>");
+    </script>
+    <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
 
     <!-- CHỌN LỚP -->
     <div class="teacher-toolbar">
@@ -33,7 +40,22 @@
 
     <!-- TABLE -->
     <form method="POST">
-
+    <div class="score-hint" style=" font-size:13.5px; color:#6b7280; margin-bottom:20px; font-style:italic;";>
+        * Nhập điểm từ 0 đến 10. Làm tròn đến số thập phân thứ nhất. Ví dụ: 8.5
+        <p> * Công thức tính điểm trung bình: ĐTB = (ĐTX x 1 + KT x 2 + Thi x 3) / 6</p>
+    </div>
+    <div class="table-actions" style="display:flex; justify-content:flex-start; margin-bottom:12px;">
+        <label class="btn-excel" style="padding:8px 18px; border:none; border-radius:18px; background:#10b981; color:#fff; cursor:pointer; font-size:13.5px; font-weight:600;">
+            📊 Tải file Excel
+            <input
+                type="file"
+                accept=".xlsx,.xls"
+                id="excelFile"
+                hidden
+            >
+        </label>
+    </div>
+    <br>
         <div class="teacher-table-wrap">
 
             <table class="teacher-table grade-table">
@@ -42,14 +64,24 @@
                         <th>STT</th>
                         <th>Mã HS</th>
                         <th>Tên học sinh</th>
-                        <th>TX</th>
-                        <th>KT</th>
+                        <th>Thường xuyên</th>
+                        <th>Kiểm tra</th>
                         <th>Thi</th>
-                        <th>DTB</th>
+                        <th>ĐTB</th>
                     </tr>
                 </thead>
 
                 <tbody>
+
+                <tr class="guide-row">
+                    <td>*</td>
+                    <td>VD</td>
+                    <td>Học sinh mẫu</td>
+                    <td>8.5</td>
+                    <td>7.0</td>
+                    <td>9.0</td>
+                    <td>8.3</td>
+                </tr>
 
                 <?php foreach ($students as $i => $s): ?>
 
@@ -71,7 +103,6 @@
                                 data-original="<?= $tx ?? '' ?>"
                                 name="data[<?= $s['MaHocSinh'] ?>][DTX]"
                                 value="<?= $tx ?? '' ?>"
-                                <?= $tx !== null ? 'readonly' : '' ?>
                             >
                         </td>
 
@@ -81,7 +112,6 @@
                                 data-original="<?= $kt ?? '' ?>"
                                 name="data[<?= $s['MaHocSinh'] ?>][KT]"
                                 value="<?= $kt ?? '' ?>"
-                                <?= $kt !== null ? 'readonly' : '' ?>
                             >
                         </td>
 
@@ -91,7 +121,6 @@
                                 data-original="<?= $thi ?? '' ?>"
                                 name="data[<?= $s['MaHocSinh'] ?>][Thi]"
                                 value="<?= $thi ?? '' ?>"
-                                <?= $thi !== null ? 'readonly' : '' ?>
                             > 
                         </td>
 
@@ -174,12 +203,15 @@ function calcDTB(tx, kt, thi){
 
 // ===== VALIDATION 0 - 10 =====
 function validateScore(value) {
-    if (value === '' || value === null) return true; // cho phép để trống
+
+    if (value === '' || value === null) return true;
+
+    value = value.replace(',', '.');
 
     let num = parseFloat(value);
 
     if (isNaN(num)) {
-        alert("Điểm phải là số hợp lệ!");
+        alert("Điểm phải là số hợp lệ nằm trong khoảng từ 0 đến 10!");
         return false;
     }
 
@@ -195,6 +227,8 @@ function validateScore(value) {
 document.querySelectorAll('.score-input').forEach(input => {
 
     input.addEventListener('input', function(){
+    
+        this.value = this.value.replace(',', '.');
 
         let value = this.value;
 

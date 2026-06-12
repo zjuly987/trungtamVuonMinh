@@ -1,9 +1,5 @@
 <link rel="stylesheet" href="public/css/attendance/take.css">
 
-<?php
-// Giao diện: Thực hiện điểm danh — Đồng bộ phong cách hệ thống
-?>
-
 <div class="student-content">
   <!-- Breadcrumb -->
   <div class="student-breadcrumb">
@@ -17,7 +13,6 @@
   <!-- Section title -->
   <div class="section-title">
     📝 THỰC HIỆN ĐIỂM DANH — Lớp: <?= htmlspecialchars($tenLop) ?> — Buổi <?= $buoiIndex ?> 
-    <!-- (<?= date('d/m/Y', strtotime($ngayHoc)) ?>) -->
   </div>
 
   <!-- Form -->
@@ -30,8 +25,8 @@
       <table class="student-table">
         <thead>
           <tr>
-            <th style="width: 8%; text-align: center;">STT</th>
-            <th style="width: 42%;">Tên Học sinh</th>
+            <th style="width: 10%; text-align: center;">STT</th>
+            <th style="width: 40%;">Tên Học sinh</th>
             <th style="width: 50%; text-align: center;">Trạng thái điểm danh</th>
           </tr>
         </thead>

@@ -74,7 +74,7 @@ class TeacherController extends Controller {
             }
 
             if(empty($data['TruongDangGiangDay'])){
-                $errors['TruongDangGiangDay'] = "Trường là bắt buộc";
+                $errors['TruongDangGiangDay'] = "Trường đang giảng dạy là bắt buộc";
             }
 
             // CHECK TRÙNG
@@ -155,9 +155,9 @@ class TeacherController extends Controller {
             }
 
             if(empty($data['TruongDangGiangDay'])){
-                $errors['TruongDangGiangDay'] = "Trường là bắt buộc";
+                $errors['TruongDangGiangDay'] = "Trường đang giảng dạy là bắt buộc";
             }
-
+    
             // CHECK TRÙNG (TRỪ CHÍNH NÓ)
             if($this->model->existsTeacherEdit($data['CCCD'], $data['SoDienThoai'], $id)){
                 $errors['exists'] = "Giáo viên đã tồn tại";

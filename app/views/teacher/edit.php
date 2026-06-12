@@ -69,7 +69,7 @@ value="<?= htmlspecialchars($old['CCCD'] ?? '') ?>">
 
 <!-- TRƯỜNG -->
 <div class="form-group">
-<label>Trường giảng dạy</label>
+<label>Trường đang giảng dạy</label>
 <input type="text" name="TruongDangGiangDay" class="form-control"
 value="<?= htmlspecialchars($old['TruongDangGiangDay'] ?? '') ?>">
 <small style="color:red"><?= $errors['TruongDangGiangDay'] ?? '' ?></small>
@@ -87,17 +87,6 @@ value="<?= htmlspecialchars($old['DiaChi'] ?? '') ?>">
 <label>Chuyên môn</label>
 <input type="text" name="ChuyenMon" class="form-control"
 value="<?= htmlspecialchars($old['ChuyenMon'] ?? '') ?>">
-</div>
-
-<!-- TÀI KHOẢN -->
-<div class="form-group">
-<label>Mã tài khoản</label>
-<input type="text"
-       name="MaTaiKhoan"
-       class="form-control"
-       value="<?= htmlspecialchars($old['MaTaiKhoan'] ?? '') ?>"
-       readonly
-       style="background:#eee; cursor:not-allowed;">
 </div>
 
 </div>

@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/trungtamVuonMinh/public/css/grade.css">
+<link rel="stylesheet" href="public/css/grade.css">
 
 <div class="teacher-content">
 
@@ -52,11 +52,11 @@
 
             <thead>
                 <tr>
-                    <th>Mã lớp</th>
-                    <th>Tên lớp</th>
-                    <th>Lịch học</th>
-                    <th>Phòng học</th>
-                    <th>Thao tác</th>
+                    <th style="width: 15%; text-align: center;">Mã lớp</th>
+                    <th style="width: 25%;">Tên lớp</th>
+                    <th style="width: 25%;">Lịch học</th>
+                    <th style="width: 10%;">Phòng học</th>
+                    <th style="width: 30%;">Thao tác</th>
                 </tr>
             </thead>
 

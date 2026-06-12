@@ -1,7 +1,6 @@
 <link rel="stylesheet" href="public/css/attendance/index.css">
 
 <?php
-// Giao diện: Quản lý điểm danh — Đồng bộ phong cách hệ thống
 if (!empty($listLopHoc)) {
     usort($listLopHoc, function($a, $b) {
         return (int)$a['MaLop'] - (int)$b['MaLop'];
@@ -55,11 +54,11 @@ function singleMapClassCode($id, $name) {
     <table class="student-table">
       <thead>
         <tr>
-          <th>Mã lớp</th>
-          <th>Tên lớp</th>
-          <th>Lịch học</th>
-          <th>Phòng học</th>
-          <th class="text-center">Thao tác</th>
+          <th style="width: 15%; text-align: center;">Mã lớp</th>
+          <th style="width: 25%;">Tên lớp</th>
+          <th style="width: 25%;">Lịch học</th>
+          <th style="width: 15%;">Phòng học</th>
+          <th style="width: 20%;">Thao tác</th>
         </tr>
       </thead>
       <tbody>
@@ -75,8 +74,8 @@ function singleMapClassCode($id, $name) {
               <td><?= htmlspecialchars($lop['LichHoc']) ?></td>
               <td><?= htmlspecialchars($lop['PhongHoc']) ?></td>
               <td class="text-center">
-                <a href="?url=attendance/detail&ma_lop=<?= $lop['MaLop'] ?>" class="btn-action-view">
-                  Tra cứu điểm danh
+                <a href="?url=attendance/detail&ma_lop=<?= $lop['MaLop'] ?>" style="color: #1A365D; font-weight:600; text-decoration:none;">
+                  <i class="bi bi-calendar-check"></i> Tra cứu điểm danh
                 </a>
               </td>
             </tr>

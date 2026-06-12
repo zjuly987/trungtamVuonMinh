@@ -11,6 +11,7 @@ class LopHoc extends Model
                 l.TenLop,
                 l.SoBuoi,
                 l.SiSo,
+                l.SiSoToiDa,
                 l.NgayBatDau,
                 g.TenGiaoVien,
                 GROUP_CONCAT(
@@ -54,16 +55,19 @@ class LopHoc extends Model
     public function create($data)
     {
         $sql = "
-            INSERT INTO LOP_HOC (TenLop, SoBuoi, SiSo, NgayBatDau, MaGiaoVien)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO LOP_HOC (TenLop, SoBuoi, SiSo, SiSoToiDa, NgayBatDau, MaGiaoVien)
+            VALUES (?, ?, ?, ?, ?, ?)
         ";
 
         $stmt = $this->db->prepare($sql);
 
+        // SiSo = 0 ban đầu (sẽ cập nhật khi thêm học sinh)
+        // SiSoToiDa = sĩ số tối đa từ form
         $stmt->execute([
             $data["TenLop"],
             $data["SoBuoi"],
-            $data["SiSo"],
+            0,  // SiSo ban đầu = 0
+            $data["SiSo"],  // SiSoToiDa = giá trị từ form
             $data["NgayBatDau"],
             $data["MaGiaoVien"] ?: null
         ]);
@@ -163,7 +167,7 @@ public function deleteSchedule($id)
 }
 public function update($id, $data)
 {
-    $sql = "UPDATE LOP_HOC SET TenLop=?, SoBuoi=?, NgayBatDau=?, MaGiaoVien=?
+    $sql = "UPDATE LOP_HOC SET TenLop=?, SoBuoi=?, NgayBatDau=?, MaGiaoVien=?, SiSoToiDa=?
             WHERE MaLop=?";
     $stmt = $this->db->prepare($sql);
     $result = $stmt->execute([
@@ -171,10 +175,10 @@ public function update($id, $data)
         $data['SoBuoi'],
         $data['NgayBatDau'],
         $data['MaGiaoVien'] ?: null,
+        $data['SiSoToiDa'],
         $id
     ]);
-    // Sau khi update, sync lại sĩ số thực tế
-    $this->syncSiSo($id);
+    // Không sync vì SiSo là số học sinh hiện tại
     return $result;
 }
     // Tạo buổi học tự động
@@ -221,6 +225,7 @@ public function update($id, $data)
                 l.TenLop,
                 l.SoBuoi,
                 l.SiSo,
+                l.SiSoToiDa,
                 l.NgayBatDau,
                 l.MaGiaoVien,
                 g.TenGiaoVien,

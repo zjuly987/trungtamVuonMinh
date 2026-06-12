@@ -69,7 +69,7 @@ value="<?= htmlspecialchars($old['CCCD'] ?? '') ?>">
 
 <!-- TRƯỜNG -->
 <div class="form-group">
-<label>Trường giảng dạy</label>
+<label>Trường đang giảng dạy</label>
 <input type="text" name="TruongDangGiangDay" class="form-control"
 value="<?= htmlspecialchars($old['TruongDangGiangDay'] ?? '') ?>">
 <small style="color:red"><?= $errors['TruongDangGiangDay'] ?? '' ?></small>
@@ -84,16 +84,67 @@ value="<?= htmlspecialchars($old['DiaChi'] ?? '') ?>">
 
 <!-- CHUYÊN MÔN -->
 <div class="form-group">
-<label>Chuyên môn</label>
-<input type="text" name="ChuyenMon" class="form-control"
-value="<?= htmlspecialchars($old['ChuyenMon'] ?? '') ?>">
-</div>
+    <label>Chuyên môn</label>
+    <select name="ChuyenMon" class="form-control">
+        <option value="">-- Chọn chuyên môn --</option>
+        <option value="Toán cấp 2"
+            <?= ($old['ChuyenMon'] ?? '') == 'Toán cấp 2' ? 'selected' : '' ?>>
+            Toán cấp 2
+        </option>
+        <option value="Toán cấp 3"
+            <?= ($old['ChuyenMon'] ?? '') == 'Toán cấp 3' ? 'selected' : '' ?>>
+            Toán cấp 3
+        </option>
+        <option value="Vật lý cấp 2"
+            <?= ($old['ChuyenMon'] ?? '') == 'Vật lý cấp 2' ? 'selected' : '' ?>>
+            Vật lý cấp 2
+        </option>
+        <option value="Vật lý cấp 3"
+            <?= ($old['ChuyenMon'] ?? '') == 'Vật lý cấp 3' ? 'selected' : '' ?>>
+            Vật lý cấp 3
+        </option>
+        <option value="Ngữ văn cấp 2"
+            <?= ($old['ChuyenMon'] ?? '') == 'Ngữ văn cấp 2' ? 'selected' : '' ?>>
+            Ngữ văn cấp 2
+        </option>
+        <option value="Ngữ văn cấp 3"
+            <?= ($old['ChuyenMon'] ?? '') == 'Ngữ văn cấp 3' ? 'selected' : '' ?>>
+            Ngữ văn cấp 3
+        </option>
+        <option value="Hóa học cấp 2"
+            <?= ($old['ChuyenMon'] ?? '') == 'Hóa học cấp 2' ? 'selected' : '' ?>>
+            Hóa học cấp 2
+        </option>
+        <option value="Hóa học cấp 3"
+            <?= ($old['ChuyenMon'] ?? '') == 'Hóa học cấp 3' ? 'selected' : '' ?>>
+            Hóa học cấp 3
+        </option>
+        <option value="Tiếng Anh cấp 2"
+            <?= ($old['ChuyenMon'] ?? '') == 'Tiếng Anh cấp 2' ? 'selected' : '' ?>>
+            Tiếng Anh cấp 2
+        </option>
+        <option value="Tiếng Anh cấp 3"
+            <?= ($old['ChuyenMon'] ?? '') == 'Tiếng Anh cấp 3' ? 'selected' : '' ?>>
+            Tiếng Anh cấp 3
+        </option>
+        <option value="Tiền tiểu học"
+            <?= ($old['ChuyenMon'] ?? '') == 'Tiền tiểu học' ? 'selected' : '' ?>>
+            Tiền tiểu học
+        </option>
 
-<!-- TÀI KHOẢN -->
-<div class="form-group">
-<label>Mã tài khoản</label>
-<input type="text" name="MaTaiKhoan" class="form-control"
-value="<?= htmlspecialchars($old['MaTaiKhoan'] ?? '') ?>">
+        <option value="Toán, Tiếng việt cấp 1"
+            <?= ($old['ChuyenMon'] ?? '') == 'Toán, Tiếng việt cấp 1' ? 'selected' : '' ?>>
+            Toán, Tiếng việt cấp 1
+        </option>
+        <option value="Sinh học cấp 2, cấp 3"
+            <?= ($old['ChuyenMon'] ?? '') == 'Sinh học cấp 2, cấp 3' ? 'selected' : '' ?>>
+            Sinh học cấp 2, cấp 3
+        </option>
+    </select>
+
+    <small style="color:red">
+        <?= $errors['ChuyenMon'] ?? '' ?>
+    </small>
 </div>
 
 </div>
